@@ -5,7 +5,6 @@ import Education from './Education';
 import { useEffect, useState } from 'react';
 import Certficates from './Certificates';
 import Projects from './Projects';
-import { FaCertificate } from 'react-icons/fa';
 import Skills from './Skills';
 function App() {
   const location = useLocation();
