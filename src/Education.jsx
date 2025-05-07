@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import './Education.css';
+import './education.css';
 
 function Education() {
   const [activeSection, setActiveSection] = useState(0);

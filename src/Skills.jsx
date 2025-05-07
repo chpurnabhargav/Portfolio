@@ -1,4 +1,4 @@
-import './Skills.css';
+import './skills.css';
 import { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
