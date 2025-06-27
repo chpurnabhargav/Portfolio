@@ -28,8 +28,15 @@ const Projects = () => {
       description: " Introducing ThinkCheck – Your AI Learning Partner  Hey everyone!  I’m thrilled to introduce ThinkCheck, an AI-driven adaptive learning platform that helps students and professionals sharpen their skills through quizzes, written assessments, roadmaps, and downloadable notes – all in one place!  What is ThinkCheck? ThinkCheck is your personal study buddy powered by Gemini AI, offering: Dynamic MCQs with difficulty selection  AI-evaluated written answers  Smart, customized roadmaps  Downloadable notes for revisionWhether you're prepping for interviews, exams, or just brushing up – ThinkCheck has your back.",
       tech: ["React.js ", "Tailwind CSS", "Node.js", "Express.js", "Gemini API","Render"],
       repoLink: "https://github.com/chpurnabhargav/ThinkCheck/",
-      demoLink: "https://thinkcheck-1.onrender.com/",
       category: "web"
+    },
+    {
+      id: "proj-003",
+      title: "Detecting-Adrenocortical-carcinoma",
+      description: "This is a practice of identifying cancer using the TP53 gene, focusing on gene sequencing related to adrenocortical carcinoma and TP53 mutations.",
+      tech: ["React.js ", "Tailwind CSS", "Node.js", "Express.js", "Gemini API","Render"],
+      repoLink: "https://github.com/chpurnabhargav/Detecting-Adrenocortical-carcinoma",
+      category: "py"
     },
   ];
   
@@ -128,17 +135,18 @@ const Projects = () => {
     );
   }
 
-  const ProjectCard = ({ project, index }) => (
-    <motion.div 
-      className="project"
-      variants={itemVariants}
-      onClick={() => setActiveProject(project)}
-      whileHover={{ 
-        y: -10,
-        boxShadow: "0 25px 35px -8px rgba(0,0,0,0.4)",
-        transition: { duration: 0.3 }
-      }}
-    >
+const ProjectCard = ({ project, index }) => (
+  <motion.div 
+    className="project"
+    variants={itemVariants}
+    onClick={() => setActiveProject(project)}
+    whileHover={{ 
+      y: -10,
+      boxShadow: "0 25px 35px -8px rgba(0,0,0,0.4)",
+      transition: { duration: 0.3 }
+    }}
+  >
+    <>
       <div className="project-icon">
         {project.category === 'web' && (
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -160,7 +168,13 @@ const Projects = () => {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
           </svg>
         )}
+        {project.category === 'python' && (
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 2h6a2 2 0 012 2v4H8a2 2 0 00-2 2v4h10a2 2 0 012 2v4a2 2 0 01-2 2H10a2 2 0 01-2-2v-4h6a2 2 0 002-2V8H8a2 2 0 01-2-2V4a2 2 0 012-2z" />
+          </svg>
+        )}
       </div>
+
       <h3>{project.title}</h3>
       <div className="tech-tags">
         {project.tech.slice(0, 3).map((item, i) => (
@@ -176,8 +190,9 @@ const Projects = () => {
           <path fillRule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clipRule="evenodd" />
         </svg>
       </span>
-    </motion.div>
-  );
+    </>
+  </motion.div>
+);
 
   const ProjectModal = ({ project }) => {
     if (!project) return null;
