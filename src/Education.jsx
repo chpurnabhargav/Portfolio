@@ -14,7 +14,7 @@ function Education() {
       degree: "Secondary Education",
       field: "General Sciences",
       years: "2018 - 2021",
-      description: "Established a strong academic foundation with focus on mathematics and sciences. Participated in various coding competitions that sparked my interest in computer science.",
+      description: "Established a strong academic foundation with focus on mathematics and sciences.",
       grade: "CGPA: 10.0",
       type: "school"
     },
