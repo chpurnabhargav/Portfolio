@@ -244,7 +244,7 @@ function ProfilePage({ setAnimationState, setIsAnimating, setExpandedProfile }) 
             
             <p>As a Student-Educator at ACM KLH, I lead workshops and organize tech events that bridge theory with practical applications. This role has sharpened my leadership abilities and strengthened my communication skills, allowing me to convey complex technical concepts in accessible ways.</p>
             
-            <p>My technical expertise includes proficiency in C/C++, Java, Python, and database systems such as SQL and PostgreSQL. I enjoy applying these skills to develop efficient and elegant solutions to real-world challenges.</p>
+            <p>My technical expertise includes proficiency in C, Java, Python, and database systems such as SQL and PostgreSQL. I enjoy applying these skills to develop efficient and elegant solutions to real-world challenges.</p>
           </div>
           
           <div className="social-links">
