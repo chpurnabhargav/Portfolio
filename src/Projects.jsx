@@ -34,7 +34,7 @@ const Projects = () => {
       id: "proj-003",
       title: "Detecting-Adrenocortical-carcinoma",
       description: "This is a practice of identifying cancer using the TP53 gene, focusing on gene sequencing related to adrenocortical carcinoma and TP53 mutations.",
-      tech: ["React.js ", "Tailwind CSS", "Node.js", "Express.js", "Gemini API","Render"],
+      tech: ["Python", "Sequencing"],
       repoLink: "https://github.com/chpurnabhargav/Detecting-Adrenocortical-carcinoma",
       category: "py"
     },
