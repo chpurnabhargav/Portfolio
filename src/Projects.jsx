@@ -38,6 +38,14 @@ const Projects = () => {
       repoLink: "https://github.com/chpurnabhargav/Detecting-Adrenocortical-carcinoma",
       category: "python"
     },
+    {
+      id: "proj-004",
+      title: "Inter-Block Outpass System (IOS)",
+      description: "Full-stack web application for automated student outpass approvals.Developed comprehensive full-stack web application using React frontend and Node.js backend.Implemented MySQL database with role-based access control for Students, Faculty, Admins, and VO Officers.",
+      tech: ["Node.js", "Express", "React ", "Render", "Tailwind CSS"],
+      repoLink: "https://github.com/chpurnabhargav/Inter-Block-OutPass-System",
+      category: "web"
+    },
   ];
   
   useEffect(() => {
