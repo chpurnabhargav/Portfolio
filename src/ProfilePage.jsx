@@ -232,6 +232,13 @@ function ProfilePage({ setAnimationState, setIsAnimating, setExpandedProfile }) 
             >
               Skills
             </button>
+            <button
+            className="profile-nav-button"
+            onClick={()=> handleNavigation('/codingprofiles')}
+            >
+              Coding Profiles
+            </ button>
+
           </div>
         </div>
         

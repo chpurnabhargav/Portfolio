@@ -1,16 +1,18 @@
-import { Routes, Route, useLocation } from 'react-router-dom';
-import LandingPage from './LandingPage';
-import ProfilePage from './ProfilePage';
-import Education from './Education'; 
-import { useEffect, useState } from 'react';
-import Certficates from './Certificates';
-import Projects from './Projects';
-import Skills from './Skills';
+import { Routes, Route, useLocation } from "react-router-dom";
+import LandingPage from "./LandingPage";
+import ProfilePage from "./ProfilePage";
+import Education from "./Education";
+import { useEffect, useState } from "react";
+import Certficates from "./Certificates";
+import Projects from "./Projects";
+import Skills from "./Skills";
+import CodingProfiles from "./CodingProfiles";
+
 function App() {
   const location = useLocation();
   const [isAnimating, setIsAnimating] = useState(false);
   const [expandedProfile, setExpandedProfile] = useState(false);
-  
+
   const [animationState, setAnimationState] = useState({
     firstText: false,
     secondText: false,
@@ -18,11 +20,11 @@ function App() {
     borderVisible: false,
     backgroundActive: false,
     clickbaitVisible: false,
-    profileExpanding: false
+    profileExpanding: false,
   });
-  
+
   useEffect(() => {
-    if (location.pathname === '/' && expandedProfile) {
+    if (location.pathname === "/" && expandedProfile) {
       setExpandedProfile(false);
     }
   }, [location.pathname, expandedProfile]);
@@ -30,7 +32,7 @@ function App() {
   return (
     <div className="app-container">
       {isAnimating && <div className="page-transition-overlay"></div>}
-      
+
       <Routes>
         <Route
           path="/"
@@ -43,6 +45,7 @@ function App() {
             />
           }
         />
+
         <Route
           path="/profile"
           element={
@@ -53,22 +56,12 @@ function App() {
             />
           }
         />
-        <Route
-          path="/education" 
-          element={<Education />}
-        />
-        <Route
-          path="/projects"
-          element={<Projects />}
-        />
-        <Route
-          path="/certificates"
-          element={<Certficates />}
-        />
-        <Route
-          path="/skills"
-          element={<Skills />}
-        />
+
+        <Route path="/education" element={<Education />} />
+        <Route path="/projects" element={<Projects />} />
+        <Route path="/certificates" element={<Certficates />} />
+        <Route path="/skills" element={<Skills />} />
+        <Route path="/codingprofiles" element={<CodingProfiles />} />
       </Routes>
     </div>
   );

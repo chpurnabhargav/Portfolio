@@ -539,3 +539,79 @@
       font-size: 0.9rem;
     }
   }
+
+  /* ===== Professional Experience Block ONLY ===== */
+
+.dev-skills-proficiency-section {
+  margin-top: 50px;
+  padding: 30px 10px;
+}
+
+.dev-skills-proficiency-heading {
+  font-size: 28px;
+  font-weight: 800;
+  margin-bottom: 20px;
+  color: #ffffff;
+}
+
+.dev-exp-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+}
+
+.dev-exp-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 18px;
+  transition: 0.25s ease;
+  backdrop-filter: blur(10px);
+}
+
+.dev-exp-card:hover {
+  transform: translateY(-6px);
+  border: 1px solid rgba(10, 132, 255, 0.55);
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.dev-exp-role {
+  font-size: 20px;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 6px;
+}
+
+.dev-exp-company {
+  font-size: 14px;
+  color: #cdd6e5;
+  margin-bottom: 12px;
+}
+
+.dev-exp-company span {
+  color: #0a84ff;
+  font-weight: 700;
+}
+
+.dev-exp-desc {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #b8c1d1;
+  margin-bottom: 15px;
+}
+
+.dev-exp-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.dev-exp-tag {
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(10, 132, 255, 0.14);
+  border: 1px solid rgba(10, 132, 255, 0.28);
+  color: #0a84ff;
+  font-weight: 700;
+}
