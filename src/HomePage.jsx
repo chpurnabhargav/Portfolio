@@ -423,11 +423,11 @@ function HomePage() {
           <div className="contact-content">
             <a href="mailto:chpurnabhargav@gmail.com" className="contact-method">
               <span className="contact-icon">Email</span>
-              <span className="contact-value">your.email@gmail.com</span>
+              <span className="contact-value">chpurnabhargav@gmail.com</span>
             </a>
             <a href="https://www.linkedin.com/in/purna-bhargav-challagundla-a783b1292/" target="_blank" rel="noopener noreferrer" className="contact-method">
               <span className="contact-icon">LinkedIn</span>
-              <span className="contact-value">linkedin.com/in/bhargav-ch</span>
+              <span className="contact-value">https://www.linkedin.com/in/purna-bhargav-challagundla-a783b1292/</span>
             </a>
             <a href="https://github.com/chpurnabhargav" target="_blank" rel="noopener noreferrer" className="contact-method">
               <span className="contact-icon">GitHub</span>
