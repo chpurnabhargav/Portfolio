@@ -421,11 +421,11 @@ function HomePage() {
           <p className="section-subtitle">Open to opportunities, collaborations, and conversations</p>
           
           <div className="contact-content">
-            <a href="mailto:your.email@gmail.com" className="contact-method">
+            <a href="mailto:chpurnabhargav@gmail.com" className="contact-method">
               <span className="contact-icon">Email</span>
               <span className="contact-value">your.email@gmail.com</span>
             </a>
-            <a href="https://linkedin.com/in/bhargav-ch" target="_blank" rel="noopener noreferrer" className="contact-method">
+            <a href="https://www.linkedin.com/in/purna-bhargav-challagundla-a783b1292/" target="_blank" rel="noopener noreferrer" className="contact-method">
               <span className="contact-icon">LinkedIn</span>
               <span className="contact-value">linkedin.com/in/bhargav-ch</span>
             </a>
