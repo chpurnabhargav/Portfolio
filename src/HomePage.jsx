@@ -11,12 +11,12 @@ function HomePage() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Clear hash on page load and refresh
+  // Always scroll to top on load/refresh
   useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+    // Optionally clear hash from URL
     if (window.location.hash) {
       window.history.replaceState(null, null, window.location.pathname);
-      // Scroll to top on page load
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   }, []);
 
@@ -110,7 +110,7 @@ function HomePage() {
       degree: "B.Tech Computer Science",
       school: "KLH University",
       year: "2023 - 2027",
-      gpa: "CGPA: 9.75"
+      gpa: "CGPA: 9.7"
     },
     {
       degree: "Higher Secondary Education",
@@ -125,7 +125,7 @@ function HomePage() {
       platform: "LeetCode",
       username: "chpurnabhargav",
       url: "https://leetcode.com/chpurnabhargav",
-      stats: "500+ Problems Solved"
+      stats: "300+ Problems Solved"
     },
     {
       platform: "CodeChef",
@@ -143,7 +143,7 @@ function HomePage() {
       platform: "HackerRank",
       username: "chpurnabhargav",
       url: "https://www.hackerrank.com/chpurnabhargav",
-      stats: "Problem Solver"
+      stats: "Problem Solving"
     },
     {
       platform: "GitHub",
@@ -213,7 +213,7 @@ function HomePage() {
           </div>
           <div className="hero-text">
             <h1 className="hero-name">Purna Bhargav</h1>
-            <p className="hero-role">Full Stack Developer & Problem Solver</p>
+            <p className="hero-role">Full Stack Developer & Data Scientist</p>
             <p className="hero-statement">
               Building intelligent, user-centric applications that solve real problems and scale
             </p>
