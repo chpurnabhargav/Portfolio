@@ -191,7 +191,7 @@ function HomePage() {
       {/* Navigation */}
       <nav className="navbar">
         <div className="nav-container">
-          <div className="nav-logo">Purn Bhargav</div>
+          <div className="nav-logo">Purna Bhargav</div>
           <div className="nav-links">
             <a href="#about" onClick={(e) => handleNavClick(e, 'about')} className="nav-link">About</a>
             <a href="#skills" onClick={(e) => handleNavClick(e, 'skills')} className="nav-link">Skills</a>
