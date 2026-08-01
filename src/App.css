@@ -1,13 +1,4 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-html, body, #root {
-  width: 100%;
-}
-
+/* App-level container — base styles live in index.css */
 .app-container {
   width: 100%;
   min-height: 100vh;
