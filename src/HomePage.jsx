@@ -208,7 +208,7 @@ const RATING_SOURCES = [
     name: 'LeetCode',
     handle: 'chpurnabhargav',
     url: 'https://leetcode.com/chpurnabhargav',
-    color: '#1d4ed8',
+    color: '#2f4bff',
     fetch: fetchLeetCodeRating,
   },
   {
@@ -216,7 +216,7 @@ const RATING_SOURCES = [
     name: 'CodeChef',
     handle: 'purnabhargav',
     url: 'https://www.codechef.com/users/purnabhargav',
-    color: '#0f766e',
+    color: '#0f7a52',
     fetch: fetchCodeChefRating,
   },
   {
@@ -224,7 +224,7 @@ const RATING_SOURCES = [
     name: 'Codeforces',
     handle: 'bhargav7666',
     url: 'https://codeforces.com/profile/bhargav7666',
-    color: '#ea580c',
+    color: '#d98407',
     fetch: fetchCodeforcesRating,
   },
 ];
@@ -1119,7 +1119,7 @@ function CombinedGraph({ series }) {
               cy={y(p.rating)}
               r={s.points.length === 1 ? 3.5 : 3}
               fill={s.color}
-              stroke="#fffdf6"
+              stroke="#f7f8fb"
               strokeWidth="1.5"
               opacity={active && active.s.key !== s.key ? 0.3 : 1}
             />
@@ -1139,7 +1139,7 @@ function CombinedGraph({ series }) {
               cx={ax}
               cy={active.py}
               r="5"
-              fill="#fffdf6"
+              fill="#f7f8fb"
               stroke={active.s.color}
               strokeWidth="2.5"
             />
