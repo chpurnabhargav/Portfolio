@@ -1487,7 +1487,7 @@ function Footer() {
   return (
     <footer className="footer">
       <div className="container footer__inner">
-        <p>© {new Date().getFullYear()} Purna Bhargav CH. Designed & built by hand.</p>
+        <p>© {new Date().getFullYear()} Purna Bhargav CH.</p>
         <a href="#top" className="footer__top" onClick={(e) => {
           e.preventDefault();
           window.scrollTo({ top: 0, behavior: 'smooth' });
