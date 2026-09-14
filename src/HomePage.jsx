@@ -84,6 +84,16 @@ const PROJECTS = [
     demo: null,
     featured: false,
   },
+  {
+  title: 'AI-NEWS',
+  tagline: 'Automated AI News Aggregation Agent',
+  description:
+    'An automated AI agent that collects the latest AI news from multiple reliable sources, processes and organizes the information, and delivers it in one place.',
+  tech: ['Python', 'AI Agents', 'Web Scraping', 'Automation'],
+  github: 'https://github.com/chpurnabhargav/ai-news-agent/',
+  demo: null,
+  featured: false,
+  },
 ];
 
 const TECH_STACK = [
