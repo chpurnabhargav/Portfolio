@@ -1459,7 +1459,7 @@ function Contact() {
             Let&apos;s build <span className="hero__name-accent">something</span>.
           </h2>
           <p className="contact__desc">
-            Open to internships, freelance work, and interesting collaborations.
+            Open for interesting collaborations.
             The fastest way to reach me is email.
           </p>
           <div className="contact__cta">
