@@ -7,7 +7,7 @@ Personal portfolio of Purna Bhargav Challagundla: Full Stack Developer, B.Tech C
 ## Features
 
 - **Light and dark themes.** Follows the OS setting until the visitor picks one, with no flash on load.
-- **Project showcase** with an illustrated cover for each project, plus source and live-demo links.
+- **Project showcase** with featured projects, tech stacks, and source and live-demo links.
 - **Live coding stats** from LeetCode, CodeChef, Codeforces, and GitHub, with a combined contest-rating chart on one shared axis.
 - **Resilient data loading.** Requests time out after 12s, results are cached for an hour, and the last good value is reused if an API is down.
 - **Accessible:** skip link, keyboard-friendly menu, reduced-motion support, screen-reader data table for the chart.

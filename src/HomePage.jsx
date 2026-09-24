@@ -33,7 +33,6 @@ import {
   HiMoon,
   HiCheck,
   HiCheckBadge,
-  HiSparkles,
   HiOutlineClipboardDocument,
 } from 'react-icons/hi2';
 import './HomePage.css';
@@ -69,7 +68,6 @@ const PROJECTS = [
     github: 'https://github.com/chpurnabhargav/Fill-Your-Code',
     demo: 'https://fill-your-code.onrender.com/',
     featured: true,
-    visual: 'editor',
   },
   {
     title: 'Think Check',
@@ -80,7 +78,6 @@ const PROJECTS = [
     github: 'https://github.com/chpurnabhargav/ThinkCheck/',
     demo: null,
     featured: true,
-    visual: 'quiz',
   },
   {
     title: 'Inter-Block Outpass System',
@@ -91,7 +88,6 @@ const PROJECTS = [
     github: 'https://github.com/chpurnabhargav/Inter-Block-OutPass-System',
     demo: null,
     featured: false,
-    visual: 'flow',
   },
   {
     title: 'AI News Agent',
@@ -102,7 +98,6 @@ const PROJECTS = [
     github: 'https://github.com/chpurnabhargav/ai-news-agent/',
     demo: null,
     featured: false,
-    visual: 'feed',
   },
   {
     title: 'Detecting Adrenocortical Carcinoma',
@@ -113,7 +108,6 @@ const PROJECTS = [
     github: 'https://github.com/chpurnabhargav/Detecting-Adrenocortical-carcinoma',
     demo: null,
     featured: false,
-    visual: 'dna',
   },
 ];
 
@@ -1016,131 +1010,9 @@ function About() {
   );
 }
 
-/* ---------- PROJECT COVERS ---------- */
-// Decorative, hand-built illustrations of what each project does.
-
-const EDITOR_LINES = [
-  [0, [['k', 'function '], ['f', 'twoSum'], ['', '(nums, target) {']]],
-  [1, [['k', 'const '], ['', 'seen = '], ['k', 'new '], ['f', 'Map'], ['', '();']]],
-  [1, [['k', 'for '], ['', '(let i = 0; i < nums.length; i++) {']]],
-  [2, [['k', 'const '], ['', 'need = target - nums[i];']]],
-  [2, [['k', 'if '], ['', '(seen.'], ['f', 'has'], ['', '(need)) '], ['k', 'return '], ['', '[seen.'], ['f', 'get'], ['', '(need), i];']]],
-];
-
-const TP53_ROWS = [
-  ['ATG', 'GAG', 'GAG', 'CCG', 'CAG', 'TCA', 'GAT', 'CCT'],
-  ['AGC', 'GTC', 'GAG', 'CCC', 'CCT', 'CTG', 'AGT', 'CAG'],
-  ['GAA', 'ACA', 'TTT', 'TCA', 'GAC', 'CTA', 'TGG', 'AAA'],
-];
-
-function ProjectCover({ kind }) {
-  let body = null;
-
-  if (kind === 'editor') {
-    body = (
-      <div className="cover__window">
-        <div className="cover__bar">
-          <i />
-          <i />
-          <i />
-          <span>two-sum.js</span>
-        </div>
-        <div className="cover__code">
-          {EDITOR_LINES.map(([indent, parts], i) => (
-            <div key={i} className="cover__line" style={{ paddingLeft: `${indent * 1.4}em` }}>
-              <span className="cover__ln">{i + 1}</span>
-              {parts.map(([cls, text], j) => (
-                <span key={j} className={cls ? `tk-${cls}` : undefined}>{text}</span>
-              ))}
-            </div>
-          ))}
-        </div>
-        <div className="cover__hint">
-          <HiSparkles />
-          A hash map gives O(n) lookups
-        </div>
-      </div>
-    );
-  } else if (kind === 'quiz') {
-    body = (
-      <div className="cover__quiz">
-        <div className="cover__quiz-head">
-          <span>Q3 of 10</span>
-          <span>Operating Systems</span>
-        </div>
-        <div className="cover__quiz-progress"><span /></div>
-        <p className="cover__quiz-q">Which scheduling algorithm can cause starvation?</p>
-        <ul className="cover__quiz-options">
-          <li>First Come, First Served</li>
-          <li className="is-correct">Shortest Job First <HiCheck /></li>
-          <li>Round Robin</li>
-        </ul>
-      </div>
-    );
-  } else if (kind === 'flow') {
-    body = (
-      <div className="cover__flow">
-        {['Student', 'Faculty', 'Admin', 'VO'].map((step) => (
-          <div key={step} className="cover__flow-step">
-            <span className="cover__flow-node"><HiCheck /></span>
-            <span className="cover__flow-label">{step}</span>
-          </div>
-        ))}
-        <div className="cover__flow-step cover__flow-step--done">
-          <span className="cover__flow-node"><HiCheckBadge /></span>
-          <span className="cover__flow-label">Approved</span>
-        </div>
-      </div>
-    );
-  } else if (kind === 'feed') {
-    body = (
-      <div className="cover__feed">
-        <div className="cover__feed-sources">
-          {['Research', 'Blogs', 'News'].map((s) => (
-            <span key={s} className="cover__chip">{s}</span>
-          ))}
-        </div>
-        <div className="cover__feed-agent">
-          <span className="cover__feed-wire" />
-          <span className="cover__feed-node"><HiSparkles /></span>
-          <span className="cover__feed-wire" />
-        </div>
-        <div className="cover__feed-digest">
-          <span className="cover__feed-title">Today in AI</span>
-          <span className="cover__bar-line" style={{ width: '92%' }} />
-          <span className="cover__bar-line" style={{ width: '74%' }} />
-          <span className="cover__bar-line" style={{ width: '84%' }} />
-        </div>
-      </div>
-    );
-  } else if (kind === 'dna') {
-    body = (
-      <div className="cover__dna">
-        <div className="cover__dna-label">TP53 · coding sequence</div>
-        {TP53_ROWS.map((row, r) => (
-          <div key={r} className="cover__dna-row">
-            {row.map((codon, c) => (
-              <span key={c} className={r === 1 && c === 3 ? 'is-flagged' : undefined}>
-                {codon}
-              </span>
-            ))}
-          </div>
-        ))}
-      </div>
-    );
-  }
-
-  return (
-    <div className={`cover cover--${kind}`} aria-hidden="true">
-      {body}
-    </div>
-  );
-}
-
 function ProjectCard({ project: p, index }) {
   return (
     <SpotlightCard className={`work__card ${p.featured ? 'work__card--featured' : ''}`}>
-      <ProjectCover kind={p.visual} />
       <div className="work__card-body">
         <div className="work__card-head">
           <span className="work__card-index">{String(index + 1).padStart(2, '0')}</span>
