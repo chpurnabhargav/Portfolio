@@ -1,3 +1,89 @@
+/* ============================================================
+   DESIGN TOKENS
+   Light is the default; [data-theme="dark"] is set on <html> by the
+   inline script in index.html (OS preference or the visitor's choice).
+   ============================================================ */
+:root {
+  color-scheme: light;
+
+  /* Color — cool plotter paper, ink navy, single cobalt signal */
+  --bg: #e9ecf1;
+  --bg-rgb: 233 236 241;
+  --bg-elevated: #f7f8fb;
+  --bg-elevated-2: #dfe4ec;
+  --surface-hover: #ffffff;
+  --border: #d3d9e4;
+  --border-strong: #b6c0d1;
+  --text: #111826;
+  --text-muted: #4f596e;
+  --text-dim: #5d6679;
+  --ink: 17 24 38;
+  --accent: #2f4bff;
+  --accent-hover: #1c33e0;
+  --accent-rgb: 47 75 255;
+  --on-accent: #f7f8fb;
+  --accent-soft: rgb(var(--accent-rgb) / 0.08);
+  --accent-glow: rgb(var(--accent-rgb) / 0.18);
+  --success: #0f7a52;
+  --success-rgb: 15 122 82;
+  --shadow: 0 12px 28px rgb(var(--ink) / 0.14);
+  --noise-opacity: 0.35;
+
+  /* Chart series — validated for CVD separation and 3:1 contrast on --bg-elevated */
+  --series-1: #2f4bff;
+  --series-2: #0f7a52;
+  --series-3: #c77700;
+
+  /* Type */
+  --font-display: 'Bricolage Grotesque', 'Helvetica Neue', Helvetica, sans-serif;
+  --font-sans: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', 'SF Mono', Menlo, monospace;
+
+  /* Layout */
+  --max-w: 1180px;
+  --gutter: clamp(1rem, 4vw, 2rem);
+  --grid-unit: 26px;
+
+  /* Radius — drafting board, not pillows */
+  --r-sm: 3px;
+  --r-md: 4px;
+  --r-lg: 6px;
+  --r-xl: 8px;
+  --r-pill: 999px;
+
+  /* Motion */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  /* Blueprint at night — deep navy paper, chalk-white ink */
+  --bg: #0b1019;
+  --bg-rgb: 11 16 25;
+  --bg-elevated: #131a27;
+  --bg-elevated-2: #1b2334;
+  --surface-hover: #182133;
+  --border: #253046;
+  --border-strong: #36435d;
+  --text: #e7ebf3;
+  --text-muted: #a9b2c5;
+  --text-dim: #8591a7;
+  --ink: 231 235 243;
+  --accent: #7b8cff;
+  --accent-hover: #9aa7ff;
+  --accent-rgb: 123 140 255;
+  --on-accent: #0b1019;
+  --success: #3cc28d;
+  --success-rgb: 60 194 141;
+  --shadow: 0 14px 32px rgb(0 0 0 / 0.45);
+  --noise-opacity: 0.18;
+
+  --series-1: #6674f5;
+  --series-2: #1f9e6e;
+  --series-3: #c58419;
+}
+
 /* Reset & base */
 *,
 *::before,
@@ -17,24 +103,25 @@ body,
 #root {
   width: 100%;
   min-height: 100vh;
-  background: #e9ecf1;
+  background: var(--bg);
 }
 
 body {
-  font-family: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
+  font-family: var(--font-sans);
   font-size: 16px;
   line-height: 1.6;
-  color: #111826;
+  color: var(--text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
+  transition: background-color 0.3s var(--ease), color 0.3s var(--ease);
 }
 
 /* Subtle global selection */
 ::selection {
-  background: rgba(47, 75, 255, 0.22);
-  color: #111826;
+  background: rgb(var(--accent-rgb) / 0.25);
+  color: var(--text);
 }
 
 /* Custom scrollbar (WebKit) */
@@ -43,20 +130,20 @@ body {
   height: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #e9ecf1;
+  background: var(--bg);
 }
 ::-webkit-scrollbar-thumb {
-  background: #c2cad9;
+  background: var(--border-strong);
   border-radius: 0;
-  border: 3px solid #e9ecf1;
+  border: 3px solid var(--bg);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #9aa6bd;
+  background: var(--text-dim);
 }
 
 /* Focus visibility */
 :focus-visible {
-  outline: 2px solid #2f4bff;
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
   border-radius: 2px;
 }
@@ -77,6 +164,12 @@ body {
 a {
   color: inherit;
   text-decoration: none;
+}
+
+/* List defaults */
+ul,
+ol {
+  list-style: none;
 }
 
 /* Image defaults */

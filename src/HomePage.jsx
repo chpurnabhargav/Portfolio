@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { motion, useReducedMotion, useScroll, useSpring } from 'framer-motion';
 import {
   SiReact,
@@ -20,27 +20,43 @@ import {
   SiLeetcode,
   SiCodechef,
   SiCodeforces,
-  SiHackerrank,
   SiLinkedin,
   SiGmail,
+  SiCisco,
 } from 'react-icons/si';
-import { HiArrowUpRight, HiArrowDownTray, HiArrowRight } from 'react-icons/hi2';
+import {
+  HiArrowUpRight,
+  HiArrowDownTray,
+  HiArrowRight,
+  HiArrowUp,
+  HiSun,
+  HiMoon,
+  HiCheck,
+  HiCheckBadge,
+  HiSparkles,
+  HiOutlineClipboardDocument,
+} from 'react-icons/hi2';
 import './HomePage.css';
 
 /* ---------- DATA ---------- */
+
+const EMAIL = 'chpurnabhargav@gmail.com';
+const GITHUB_URL = 'https://github.com/chpurnabhargav';
+const LINKEDIN_URL = 'https://www.linkedin.com/in/purna-bhargav-challagundla-a783b1292/';
 
 const NAV_LINKS = [
   { id: 'about', label: 'About' },
   { id: 'work', label: 'Work' },
   { id: 'coding', label: 'Coding' },
   { id: 'experience', label: 'Experience' },
+  { id: 'skills', label: 'Skills' },
   { id: 'contact', label: 'Contact' },
 ];
 
 const SOCIAL_LINKS = [
-  { icon: SiGithub, href: 'https://github.com/chpurnabhargav', label: 'GitHub' },
-  { icon: SiLinkedin, href: 'https://www.linkedin.com/in/purna-bhargav-challagundla-a783b1292/', label: 'LinkedIn' },
-  { icon: SiGmail, href: 'mailto:chpurnabhargav@gmail.com', label: 'Email' },
+  { icon: SiGithub, href: GITHUB_URL, label: 'GitHub' },
+  { icon: SiLinkedin, href: LINKEDIN_URL, label: 'LinkedIn' },
+  { icon: SiGmail, href: `mailto:${EMAIL}`, label: 'Email' },
 ];
 
 const PROJECTS = [
@@ -48,51 +64,56 @@ const PROJECTS = [
     title: 'Fill Your Code',
     tagline: 'An AI coding assistant for students',
     description:
-      'A real-time AI coding assistant built with Node.js, Express, and React. Students can ask about any code and get Gemini-powered suggestions for collaboration and learning in one place.',
-    tech: ['Node.js', 'Express', 'React', 'Tailwind CSS', 'Gemini API', 'Render'],
+      'A real-time coding assistant where students paste any code and get Gemini-powered explanations and suggestions, so learning and collaboration happen in one place.',
+    tech: ['React', 'Node.js', 'Express', 'Tailwind CSS', 'Gemini API', 'Render'],
     github: 'https://github.com/chpurnabhargav/Fill-Your-Code',
     demo: 'https://fill-your-code.onrender.com/',
     featured: true,
+    visual: 'editor',
   },
   {
     title: 'Think Check',
     tagline: 'Adaptive learning, AI-evaluated',
     description:
-      'AI-driven adaptive learning platform with dynamic MCQs, written assessments, smart roadmaps, and downloadable notes. Your personal study buddy, powered by Gemini AI.',
-    tech: ['React', 'Tailwind CSS', 'Node.js', 'Express', 'Gemini API'],
+      'An adaptive learning platform that generates MCQs and written assessments, evaluates answers with Gemini, and builds study roadmaps with downloadable notes.',
+    tech: ['React', 'Node.js', 'Express', 'Tailwind CSS', 'Gemini API'],
     github: 'https://github.com/chpurnabhargav/ThinkCheck/',
     demo: null,
     featured: true,
+    visual: 'quiz',
   },
   {
     title: 'Inter-Block Outpass System',
     tagline: 'Automated student outpass approvals',
     description:
-      'Full-stack web application for automated student outpass approvals. MySQL with role-based access for Students, Faculty, Admins, and VO Officers.',
-    tech: ['Node.js', 'Express', 'React', 'MySQL', 'Tailwind CSS'],
+      'Replaces paper outpass slips with an approval workflow, with role-based access for students, faculty, admins, and VO officers on a MySQL backend.',
+    tech: ['React', 'Node.js', 'Express', 'MySQL', 'Tailwind CSS'],
     github: 'https://github.com/chpurnabhargav/Inter-Block-OutPass-System',
     demo: null,
     featured: false,
+    visual: 'flow',
+  },
+  {
+    title: 'AI News Agent',
+    tagline: 'Automated AI news aggregation',
+    description:
+      'An automated agent that collects the latest AI news from multiple reliable sources, then processes, organizes, and delivers it in one place.',
+    tech: ['Python', 'AI Agents', 'Web Scraping', 'Automation'],
+    github: 'https://github.com/chpurnabhargav/ai-news-agent/',
+    demo: null,
+    featured: false,
+    visual: 'feed',
   },
   {
     title: 'Detecting Adrenocortical Carcinoma',
     tagline: 'Bioinformatics meets code',
     description:
-      'Identifies adrenocortical carcinoma using TP53 gene sequencing to explore how programming applies to genomic analysis.',
+      'Analyzes TP53 gene sequences to help identify adrenocortical carcinoma, exploring how programming applies to genomic analysis.',
     tech: ['Python', 'Bioinformatics', 'Sequencing'],
     github: 'https://github.com/chpurnabhargav/Detecting-Adrenocortical-carcinoma',
     demo: null,
     featured: false,
-  },
-  {
-  title: 'AI-NEWS',
-  tagline: 'Automated AI News Aggregation Agent',
-  description:
-    'An automated AI agent that collects the latest AI news from multiple reliable sources, processes and organizes the information, and delivers it in one place.',
-  tech: ['Python', 'AI Agents', 'Web Scraping', 'Automation'],
-  github: 'https://github.com/chpurnabhargav/ai-news-agent/',
-  demo: null,
-  featured: false,
+    visual: 'dna',
   },
 ];
 
@@ -115,77 +136,32 @@ const TECH_STACK = [
   { name: 'OpenAI', icon: SiOpenai },
 ];
 
-const CODING_PROFILES = [
-  {
-    name: 'LeetCode',
-    handle: 'chpurnabhargav',
-    statLabel: 'Problems Solved',
-    url: 'https://leetcode.com/chpurnabhargav',
-    icon: SiLeetcode,
-    fetchStat: () =>
-      fetch('https://alfa-leetcode-api.onrender.com/chpurnabhargav/solved')
-        .then((r) => (r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status))))
-        .then((j) => ({ value: String(j.solvedProblem), label: 'Problems Solved' })),
-  },
-  {
-    name: 'CodeChef',
-    handle: 'purnabhargav',
-    statLabel: 'Current Rating',
-    url: 'https://www.codechef.com/users/purnabhargav',
-    icon: SiCodechef,
-    fetchStat: () =>
-      loadRatingPoints('ratings-codechef', fetchCodeChefRating).then((points) => ({
-        value: String(points[points.length - 1].rating),
-        label: 'Current Rating',
-      })),
-  },
-  {
-    name: 'Codeforces',
-    handle: 'bhargav7666',
-    statLabel: 'Current Rating',
-    url: 'https://codeforces.com/profile/bhargav7666',
-    icon: SiCodeforces,
-    fetchStat: () =>
-      loadRatingPoints('ratings-codeforces', fetchCodeforcesRating).then((points) => ({
-        value: String(points[points.length - 1].rating),
-        label: 'Current Rating',
-      })),
-  },
-  {
-    name: 'GitHub',
-    handle: 'chpurnabhargav',
-    statLabel: 'Repositories',
-    url: 'https://github.com/chpurnabhargav',
-    icon: SiGithub,
-    fetchStat: () =>
-      fetch('https://api.github.com/users/chpurnabhargav')
-        .then((r) => (r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status))))
-        .then((j) => ({ value: String(j.public_repos), label: 'Repositories' })),
-  },
-];
+const FETCH_TIMEOUT_MS = 12000;
+
+function fetchJSON(url) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS);
+  return fetch(url, { signal: controller.signal })
+    .then((r) => (r.ok ? r.json() : Promise.reject(new Error('HTTP ' + r.status))))
+    .finally(() => clearTimeout(timer));
+}
 
 const fetchLeetCodeRating = () =>
-  fetch('https://leetcode-stats.tashif.codes/chpurnabhargav/rating').then((r) =>
-    r.ok
-      ? r.json()
-      : Promise.reject(new Error('HTTP ' + r.status))
-  ).then((j) => {
+  fetchJSON('https://leetcode-stats.tashif.codes/chpurnabhargav/rating').then((j) => {
     if (j.status !== 'success' || !j.data || !Array.isArray(j.data.history)) {
       throw new Error('Bad response');
     }
-    return j.data.history.map((h) => ({
-      date: h.timestamp * 1000,
-      rating: Math.round(h.rating),
-      name: h.contestName,
-    }));
+    return j.data.history
+      .filter((h) => h.attended !== false)
+      .map((h) => ({
+        date: h.timestamp * 1000,
+        rating: Math.round(h.rating),
+        name: h.contestName,
+      }));
   });
 
 const fetchCodeChefRating = () =>
-  fetch('https://codechef-stats-api-two.vercel.app/purnabhargav/rating').then((r) =>
-    r.ok
-      ? r.json()
-      : Promise.reject(new Error('HTTP ' + r.status))
-  ).then((j) => {
+  fetchJSON('https://codechef-stats-api-two.vercel.app/purnabhargav/rating').then((j) => {
     if (j.status !== 'success' || !j.data || !Array.isArray(j.data.history)) {
       throw new Error('Bad response');
     }
@@ -197,11 +173,7 @@ const fetchCodeChefRating = () =>
   });
 
 const fetchCodeforcesRating = () =>
-  fetch('https://codeforces.com/api/user.rating?handle=bhargav7666').then((r) =>
-    r.ok
-      ? r.json()
-      : Promise.reject(new Error('HTTP ' + r.status))
-  ).then((j) => {
+  fetchJSON('https://codeforces.com/api/user.rating?handle=bhargav7666').then((j) => {
     if (j.status !== 'OK' || !Array.isArray(j.result)) {
       throw new Error('Bad response');
     }
@@ -212,13 +184,14 @@ const fetchCodeforcesRating = () =>
     }));
   });
 
+// Colors are CSS variables so each theme can supply its own validated steps.
 const RATING_SOURCES = [
   {
     key: 'leetcode',
     name: 'LeetCode',
     handle: 'chpurnabhargav',
     url: 'https://leetcode.com/chpurnabhargav',
-    color: '#2f4bff',
+    color: 'var(--series-1)',
     fetch: fetchLeetCodeRating,
   },
   {
@@ -226,7 +199,7 @@ const RATING_SOURCES = [
     name: 'CodeChef',
     handle: 'purnabhargav',
     url: 'https://www.codechef.com/users/purnabhargav',
-    color: '#0f7a52',
+    color: 'var(--series-2)',
     fetch: fetchCodeChefRating,
   },
   {
@@ -234,8 +207,57 @@ const RATING_SOURCES = [
     name: 'Codeforces',
     handle: 'bhargav7666',
     url: 'https://codeforces.com/profile/bhargav7666',
-    color: '#d98407',
+    color: 'var(--series-3)',
     fetch: fetchCodeforcesRating,
+  },
+];
+
+const latestRating = (points) => ({
+  value: String(points[points.length - 1].rating),
+  label: 'Current rating',
+});
+
+const CODING_PROFILES = [
+  {
+    name: 'LeetCode',
+    handle: 'chpurnabhargav',
+    statLabel: 'Problems solved',
+    url: 'https://leetcode.com/chpurnabhargav',
+    icon: SiLeetcode,
+    fetchStat: () =>
+      fetchJSON('https://alfa-leetcode-api.onrender.com/chpurnabhargav/solved').then((j) => ({
+        value: String(j.solvedProblem),
+        label: 'Problems solved',
+      })),
+  },
+  {
+    name: 'CodeChef',
+    handle: 'purnabhargav',
+    statLabel: 'Current rating',
+    url: 'https://www.codechef.com/users/purnabhargav',
+    icon: SiCodechef,
+    fetchStat: () => loadRatingPoints('ratings-codechef', fetchCodeChefRating).then(latestRating),
+  },
+  {
+    name: 'Codeforces',
+    handle: 'bhargav7666',
+    statLabel: 'Current rating',
+    url: 'https://codeforces.com/profile/bhargav7666',
+    icon: SiCodeforces,
+    fetchStat: () =>
+      loadRatingPoints('ratings-codeforces', fetchCodeforcesRating).then(latestRating),
+  },
+  {
+    name: 'GitHub',
+    handle: 'chpurnabhargav',
+    statLabel: 'Public repos',
+    url: GITHUB_URL,
+    icon: SiGithub,
+    fetchStat: () =>
+      fetchJSON('https://api.github.com/users/chpurnabhargav').then((j) => ({
+        value: String(j.public_repos),
+        label: 'Public repos',
+      })),
   },
 ];
 
@@ -244,12 +266,15 @@ const CACHE_TTL_MS = 60 * 60 * 1000;
 const ratingCache = {};
 const inflight = {};
 
-function readCache(key) {
+// With allowStale, returns the last good value however old it is, so a
+// flaky third-party API falls back to real (if dated) numbers.
+function readCache(key, allowStale = false) {
   try {
     const raw = localStorage.getItem(STORE_PREFIX + key);
     if (!raw) return null;
     const entry = JSON.parse(raw);
-    if (!entry || !entry.at || !entry.value || Date.now() - entry.at > CACHE_TTL_MS) return null;
+    if (!entry || !entry.at || !entry.value) return null;
+    if (!allowStale && Date.now() - entry.at > CACHE_TTL_MS) return null;
     if (Array.isArray(entry.value) && entry.value.length === 0) return null;
     return entry.value;
   } catch {
@@ -274,6 +299,11 @@ function loadRatingPoints(key, fetcher) {
         writeCache(key, points);
         return points;
       })
+      .catch((err) => {
+        const stale = readCache(key, true);
+        if (stale) return stale;
+        throw err;
+      })
       .finally(() => {
         delete inflight[key];
       });
@@ -284,40 +314,23 @@ function loadRatingPoints(key, fetcher) {
 const EXPERIENCE = [
   {
     role: 'Software Engineer Intern',
-    org: 'Visa Inc. (DPS)',
+    org: 'Visa Inc. · DPS',
     period: 'Summer 2026',
     tag: 'Internship',
     bullets: [
-      'Automated the workflow of payment mappings within Visa\'s DPS team, replacing a manual, error-prone process with reusable internal tooling',
-      'Collaborated with engineers and ops to cut turnaround time on payment mapping reviews while keeping mapping accuracy high',
+      'Automated the payment-mapping workflow for Visa’s DPS team, replacing a manual, error-prone process with reusable internal tooling',
+      'Worked with engineers and operations to cut turnaround time on payment-mapping reviews while keeping mapping accuracy high',
       'Gained hands-on experience with enterprise payments infrastructure and the full software delivery lifecycle at scale',
     ],
   },
   {
     role: 'Full Stack Developer',
-    org: 'Personal & Hackathon Projects',
-    period: '2024 to Present',
+    org: 'Personal & hackathon projects',
+    period: '2023 to Present',
     bullets: [
-      'Built full-stack applications using React, Node.js, MongoDB, and Supabase',
+      'Built and deployed full-stack apps with React, Node.js, Express, MongoDB, and Supabase, including Fill Your Code and Think Check',
       'Implemented authentication, dashboards, REST APIs, and CI/CD on Render',
-    ],
-  },
-  {
-    role: 'Frontend Developer',
-    org: 'Portfolio & UI Projects',
-    period: '2023 to Present',
-    bullets: [
-      'Designed responsive UI components with smooth, intentional animations',
-      'Translated product requirements into clean, accessible interfaces',
-    ],
-  },
-  {
-    role: 'Competitive Programmer',
-    org: 'LeetCode · CodeChef · Codeforces',
-    period: '2023 to Present',
-    bullets: [
-      '300+ DSA problems across arrays, graphs, DP, and system design topics',
-      'Sharpening speed, logic, and pattern recognition through daily practice',
+      'Designed responsive, accessible UI components with purposeful motion',
     ],
   },
 ];
@@ -325,27 +338,27 @@ const EXPERIENCE = [
 const SKILL_GROUPS = [
   {
     label: 'Languages',
-    items: ['C', 'C++', 'Python', 'Java', 'JavaScript'],
+    items: ['C', 'C++', 'Java', 'Python', 'JavaScript'],
   },
   {
     label: 'Frontend',
     items: ['React', 'HTML5', 'CSS3', 'Tailwind CSS'],
   },
   {
-    label: 'Backend',
-    items: ['Node.js', 'Express', 'REST APIs', 'MongoDB', 'SQL', 'PostgreSQL', 'MySQL'],
+    label: 'Backend & databases',
+    items: ['Node.js', 'Express', 'REST APIs', 'SQL', 'MongoDB', 'PostgreSQL', 'MySQL'],
   },
   {
-    label: 'AI, ML & Data',
-    items: ['Python', 'OpenAI API', 'Gemini API', 'Pandas', 'scikit-learn', 'AI Agents'],
+    label: 'AI & data',
+    items: ['OpenAI API', 'Gemini API', 'AI Agents', 'Pandas', 'scikit-learn'],
   },
   {
-    label: 'Tools & DevOps',
-    items: ['Git', 'GitHub', 'VS Code', 'AWS', 'Networking', 'No-Code'],
+    label: 'Cloud & tools',
+    items: ['AWS', 'Git', 'GitHub', 'VS Code'],
   },
   {
-    label: 'Other',
-    items: ['Operating Systems', 'IoT', 'FreeCAD', '3D Printing', 'Content Editing'],
+    label: 'CS fundamentals',
+    items: ['Data Structures & Algorithms', 'Operating Systems', 'Computer Networks'],
   },
 ];
 
@@ -365,11 +378,11 @@ const EDUCATION = [
 ];
 
 const CERTIFICATIONS = [
-  { title: 'AWS Cloud Practitioner', issuer: 'Amazon Web Services', year: '2026' },
-  { title: 'CCNA: Introduction to Networks', issuer: 'Cisco', year: '2025' },
-  { title: 'MongoDB Associate Developer', issuer: 'MongoDB', year: '2025' },
-  { title: 'Automation Anywhere RPA (RPC)', issuer: 'Automation Anywhere', year: '2025' },
-  { title: 'AWS Academy Cloud Foundations', issuer: 'AWS Academy', year: '2024' },
+  { title: 'AWS Cloud Practitioner', issuer: 'Amazon Web Services', year: '2026', icon: SiAmazonwebservices },
+  { title: 'CCNA: Introduction to Networks', issuer: 'Cisco', year: '2025', icon: SiCisco },
+  { title: 'MongoDB Associate Developer', issuer: 'MongoDB', year: '2025', icon: SiMongodb },
+  { title: 'Automation Anywhere RPA (RPC)', issuer: 'Automation Anywhere', year: '2025', icon: HiCheckBadge },
+  { title: 'AWS Academy Cloud Foundations', issuer: 'AWS Academy', year: '2024', icon: SiAmazonwebservices },
 ];
 
 const ROLES = [
@@ -378,6 +391,9 @@ const ROLES = [
   'Data Science & AI Agent Learner',
   'Competitive Programmer',
 ];
+
+// Shown until the live contest count loads (or if a rating API is down).
+const CONTESTS_FALLBACK = 22;
 
 const EASE = [0.22, 1, 0.36, 1];
 
@@ -409,6 +425,22 @@ function useInView(options = {}) {
   return [ref, inView];
 }
 
+function useElementWidth() {
+  const ref = useRef(null);
+  const [width, setWidth] = useState(0);
+
+  useLayoutEffect(() => {
+    const node = ref.current;
+    if (!node) return;
+    setWidth(node.clientWidth);
+    const observer = new ResizeObserver(([entry]) => setWidth(entry.contentRect.width));
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
+  return [ref, width];
+}
+
 function useScrollSpy(ids) {
   const [active, setActive] = useState('');
   const key = ids.join(',');
@@ -435,22 +467,29 @@ function useScrollSpy(ids) {
   return active;
 }
 
-function useCountUp(target, inView, duration = 1600) {
+// Counts from the last shown value, so a target that changes later
+// (e.g. a live number replacing its fallback) animates smoothly.
+function useCountUp(target, inView, decimals = 0, duration = 1600) {
   const [value, setValue] = useState(0);
+  const fromRef = useRef(0);
 
   useEffect(() => {
     if (!inView) return;
     let raf;
+    const from = fromRef.current;
+    const factor = 10 ** decimals;
     const start = performance.now();
     const tick = (now) => {
       const p = Math.min((now - start) / duration, 1);
       const eased = 1 - Math.pow(1 - p, 3);
-      setValue(Math.round(eased * target));
+      const next = Math.round((from + (target - from) * eased) * factor) / factor;
+      fromRef.current = next;
+      setValue(next);
       if (p < 1) raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
-  }, [inView, target, duration]);
+  }, [inView, target, decimals, duration]);
 
   return value;
 }
@@ -485,6 +524,58 @@ function useTypewriter(words, typeSpeed = 85, deleteSpeed = 40, pauseDelay = 190
   return reduce ? words[0] : words[index % words.length].slice(0, sub);
 }
 
+const THEME_KEY = 'pb-theme';
+
+// index.html sets data-theme before first paint; this keeps it in sync.
+function useTheme() {
+  const [theme, setTheme] = useState(() =>
+    document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light'
+  );
+
+  useEffect(() => {
+    const root = document.documentElement;
+    root.dataset.theme = theme;
+    root.style.colorScheme = theme;
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) meta.setAttribute('content', theme === 'dark' ? '#0b1019' : '#e9ecf1');
+  }, [theme]);
+
+  // Follow the OS setting until the visitor picks a theme themselves.
+  useEffect(() => {
+    let stored = null;
+    try {
+      stored = localStorage.getItem(THEME_KEY);
+    } catch {
+      /* storage unavailable */
+    }
+    if (stored || !window.matchMedia) return;
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    const onChange = (e) => setTheme(e.matches ? 'dark' : 'light');
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
+
+  const toggle = () => {
+    const next = theme === 'dark' ? 'light' : 'dark';
+    setTheme(next);
+    try {
+      localStorage.setItem(THEME_KEY, next);
+    } catch {
+      /* storage unavailable, theme still applies for this visit */
+    }
+  };
+
+  return [theme, toggle];
+}
+
+function scrollToSection(id) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const hash = id === 'top' ? '' : `#${id}`;
+  window.history.replaceState(null, '', window.location.pathname + hash);
+}
+
 /* ---------- AMBIENT COMPONENTS ---------- */
 
 function ScrollProgress() {
@@ -495,26 +586,6 @@ function ScrollProgress() {
     <motion.div
       className="scroll-progress"
       style={{ scaleX }}
-      aria-hidden="true"
-    />
-  );
-}
-
-function CursorGlow() {
-  const reduce = useReducedMotion();
-  const [pos, setPos] = useState({ x: -600, y: -600 });
-
-  useEffect(() => {
-    if (reduce) return;
-    const onMove = (e) => setPos({ x: e.clientX, y: e.clientY });
-    window.addEventListener('pointermove', onMove, { passive: true });
-    return () => window.removeEventListener('pointermove', onMove);
-  }, [reduce]);
-
-  return (
-    <div
-      className={`cursor-glow ${reduce ? 'cursor-glow--off' : ''}`}
-      style={{ transform: `translate3d(${pos.x}px, ${pos.y}px, 0)` }}
       aria-hidden="true"
     />
   );
@@ -534,10 +605,11 @@ function BackToTop() {
     <button
       type="button"
       className={`back-to-top ${visible ? 'back-to-top--visible' : ''}`}
-      onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+      onClick={() => scrollToSection('top')}
       aria-label="Back to top"
+      tabIndex={visible ? 0 : -1}
     >
-      <HiArrowUpRight />
+      <HiArrowUp />
     </button>
   );
 }
@@ -572,14 +644,29 @@ function Reveal({ children, delay = 0, y = 24, className = '' }) {
       className={className}
       initial={reduce ? false : { opacity: 0, y }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.6, delay, ease: EASE }}
     >
       {children}
     </motion.div>
   );
 }
 
-function Navbar() {
+function ThemeToggle({ theme, onToggle }) {
+  const dark = theme === 'dark';
+  return (
+    <button
+      type="button"
+      className="nav__theme"
+      onClick={onToggle}
+      aria-label={dark ? 'Switch to light theme' : 'Switch to dark theme'}
+      title={dark ? 'Light theme' : 'Dark theme'}
+    >
+      {dark ? <HiSun /> : <HiMoon />}
+    </button>
+  );
+}
+
+function Navbar({ theme, onToggleTheme }) {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const active = useScrollSpy(NAV_LINKS.map((l) => l.id));
@@ -591,21 +678,26 @@ function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e) => {
+      if (e.key === 'Escape') setOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [open]);
+
   const handleClick = (e, id) => {
     e.preventDefault();
     setOpen(false);
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      window.history.replaceState(null, '', window.location.pathname);
-    }
+    scrollToSection(id);
   };
 
   return (
-    <header className={`nav ${scrolled ? 'nav--scrolled' : ''}`}>
+    <header className={`nav ${scrolled || open ? 'nav--scrolled' : ''}`}>
       <div className="nav__inner">
         <a href="#top" className="nav__logo" onClick={(e) => handleClick(e, 'top')}>
-          <span className="nav__logo-dot" />
+          <span className="nav__logo-mark" aria-hidden="true">B</span>
           <span>Bhargav</span>
         </a>
         <nav className="nav__links" aria-label="Primary">
@@ -614,6 +706,7 @@ function Navbar() {
               key={l.id}
               href={`#${l.id}`}
               className={`nav__link ${active === l.id ? 'nav__link--active' : ''}`}
+              aria-current={active === l.id ? 'true' : undefined}
               onClick={(e) => handleClick(e, l.id)}
             >
               {l.label}
@@ -621,16 +714,18 @@ function Navbar() {
           ))}
         </nav>
         <div className="nav__actions">
+          <ThemeToggle theme={theme} onToggle={onToggleTheme} />
           <a href="/resume.pdf" download="Bhargav_Resume.pdf" className="nav__cta">
             Resume
-            <HiArrowUpRight />
+            <HiArrowDownTray />
           </a>
           <button
             type="button"
             className={`nav__toggle ${open ? 'nav__toggle--open' : ''}`}
             onClick={() => setOpen((o) => !o)}
-            aria-label="Toggle navigation menu"
+            aria-label={open ? 'Close navigation menu' : 'Open navigation menu'}
             aria-expanded={open}
+            aria-controls="mobile-nav"
           >
             <span />
             <span />
@@ -639,7 +734,12 @@ function Navbar() {
         </div>
       </div>
 
-      <div className={`nav__mobile ${open ? 'nav__mobile--open' : ''}`}>
+      <nav
+        id="mobile-nav"
+        className={`nav__mobile ${open ? 'nav__mobile--open' : ''}`}
+        aria-label="Mobile"
+        inert={!open}
+      >
         {NAV_LINKS.map((l) => (
           <a
             key={l.id}
@@ -651,10 +751,10 @@ function Navbar() {
           </a>
         ))}
         <a href="/resume.pdf" download="Bhargav_Resume.pdf" className="nav__mobile-cta">
-          Resume
-          <HiArrowUpRight />
+          Download resume
+          <HiArrowDownTray />
         </a>
-      </div>
+      </nav>
     </header>
   );
 }
@@ -664,13 +764,18 @@ function Hero() {
 
   return (
     <section className="hero" id="top">
-      <div className="hero__bg" aria-hidden="true">
-        <span className="hero__blob hero__blob--1" />
-        <span className="hero__blob hero__blob--2" />
-        <span className="hero__blob hero__blob--3" />
-      </div>
+      <div className="hero__bg" aria-hidden="true" />
       <div className="hero__grid container">
         <div className="hero__copy">
+          <Reveal>
+            <p className="hero__status">
+              <span className="hero__status-dot" aria-hidden="true" />
+              Software Engineer Intern at <strong>Visa</strong>
+              <span className="hero__status-sep" aria-hidden="true">·</span>
+              <span className="hero__status-date">Summer 2026</span>
+            </p>
+          </Reveal>
+
           <Reveal delay={0.05} y={32}>
             <h1 className="hero__name">
               Purna <span className="hero__name-accent">Bhargav</span>
@@ -679,18 +784,19 @@ function Hero() {
 
           <Reveal delay={0.1}>
             <p className="hero__role">
-              {typedRole}
-              <span className="hero__caret" aria-hidden="true" />
+              <span className="sr-only">Full Stack Developer and aspiring AI engineer</span>
+              <span aria-hidden="true">
+                {typedRole}
+                <span className="hero__caret" />
+              </span>
             </p>
           </Reveal>
 
           <Reveal delay={0.15}>
             <p className="hero__bio">
-              I&apos;m a CS undergrad at KLH University, focused on shipping full-stack
-              products with React, Node.js, and modern AI APIs. I&apos;m constantly learning
-              data science and AI agents with the goal of becoming an AI engineer. I care
-              about clean interfaces, fast feedback loops, and code that actually runs
-              in production.
+              I&apos;m a Computer Science undergrad at KLH University who ships full-stack
+              products with React, Node.js, and modern AI APIs. Right now I&apos;m going
+              deeper into data science and AI agents on the way to becoming an AI engineer.
             </p>
           </Reveal>
 
@@ -698,7 +804,7 @@ function Hero() {
             <div className="hero__cta">
               <a href="#work" className="btn btn--primary" onClick={(e) => {
                 e.preventDefault();
-                document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' });
+                scrollToSection('work');
               }}>
                 View my work
                 <HiArrowRight />
@@ -720,6 +826,7 @@ function Hero() {
                   target={href.startsWith('http') ? '_blank' : undefined}
                   rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
                   aria-label={label}
+                  title={label}
                 >
                   <Icon />
                 </a>
@@ -730,8 +837,13 @@ function Hero() {
 
         <Reveal delay={0.1} y={40} className="hero__portrait-wrap">
           <div className="hero__portrait">
-            <img src="/img.jpg" alt="Purna Bhargav" />
-            <div className="hero__portrait-glow" aria-hidden="true" />
+            <img
+              src="/img.jpg"
+              alt="Portrait of Purna Bhargav"
+              width="413"
+              height="531"
+              fetchPriority="high"
+            />
           </div>
           <div className="hero__portrait-meta">
             <span className="hero__portrait-name">Purna Bhargav CH</span>
@@ -744,22 +856,24 @@ function Hero() {
 }
 
 function Marquee() {
-  // Double the list so the loop is seamless
-  const items = [...TECH_STACK, ...TECH_STACK];
+  const renderItems = (hidden) =>
+    TECH_STACK.map((t) => {
+      const Icon = t.icon;
+      return (
+        <li key={`${t.name}-${hidden ? 'b' : 'a'}`} className="marquee__item" aria-hidden={hidden || undefined}>
+          <Icon aria-hidden="true" />
+          <span>{t.name}</span>
+        </li>
+      );
+    });
 
+  // The list is rendered twice so the loop is seamless; the copy is hidden from screen readers.
   return (
     <section className="marquee" aria-label="Technologies I work with">
-      <div className="marquee__track">
-        {items.map((t, i) => {
-          const Icon = t.icon;
-          return (
-            <div key={`${t.name}-${i}`} className="marquee__item">
-              <Icon />
-              <span>{t.name}</span>
-            </div>
-          );
-        })}
-      </div>
+      <ul className="marquee__track">
+        {renderItems(false)}
+        {renderItems(true)}
+      </ul>
     </section>
   );
 }
@@ -789,7 +903,7 @@ function SectionHeader({ eyebrow, title, description }) {
             transition={{ duration: 0.55, delay: 0.08 + i * 0.05, ease: EASE }}
           >
             {w}
-            {i < words.length - 1 ? '\u00A0' : ''}
+            {i < words.length - 1 ? ' ' : ''}
           </motion.span>
         ))}
       </h2>
@@ -807,10 +921,11 @@ function SectionHeader({ eyebrow, title, description }) {
   );
 }
 
-function StatCard({ value, suffix = '', label, delay }) {
+function StatCard({ value, decimals = 0, suffix = '', label, delay }) {
   const reduce = useReducedMotion();
   const [ref, inView] = useInView();
-  const count = useCountUp(value, inView);
+  const count = useCountUp(value, inView, decimals);
+  const shown = reduce ? value : count;
 
   return (
     <motion.div
@@ -821,7 +936,7 @@ function StatCard({ value, suffix = '', label, delay }) {
       transition={{ duration: 0.6, delay, ease: EASE }}
     >
       <div className="about__stat-value">
-        {reduce ? value : count}
+        {shown.toFixed(decimals)}
         {suffix && <span className="about__stat-suffix">{suffix}</span>}
       </div>
       <div className="about__stat-label">{label}</div>
@@ -829,12 +944,37 @@ function StatCard({ value, suffix = '', label, delay }) {
   );
 }
 
+// Total rated contests across all three platforms. Only replaces the
+// fallback when every platform answers, so a partial sum never undercounts.
+function useContestCount() {
+  const [count, setCount] = useState(CONTESTS_FALLBACK);
+
+  useEffect(() => {
+    let cancelled = false;
+    Promise.all(RATING_SOURCES.map((s) => loadRatingPoints('ratings-' + s.key, s.fetch)))
+      .then((all) => {
+        if (cancelled) return;
+        const total = all.reduce((n, points) => n + points.length, 0);
+        if (total > 0) setCount(total);
+      })
+      .catch(() => {
+        /* keep the fallback */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return count;
+}
+
 function About() {
+  const contests = useContestCount();
   const stats = [
-    { value: 4, label: 'Projects built' },
-    { value: 22, label: 'Competitive contests entered' },
-    { value: 2, suffix: '+', label: 'Years writing code' },
-    { value: 5, label: 'Industry certifications' },
+    { value: 9.7, decimals: 1, label: 'CGPA, B.Tech Computer Science' },
+    { value: PROJECTS.length, label: 'Projects built and open-sourced' },
+    { value: contests, label: 'Rated coding contests' },
+    { value: CERTIFICATIONS.length, label: 'Industry certifications' },
   ];
 
   return (
@@ -852,12 +992,12 @@ function About() {
               I started writing code to make small things work, then kept going because
               the small things started adding up. Today I work mostly across the stack
               with React and Node.js, and I&apos;ve been leaning into AI-powered products
-              since the Gemini and OpenAI APIs made it tractable to ship them on a weekend.
+              since the Gemini and OpenAI APIs made it practical to ship them on a weekend.
             </p>
             <p>
-              Right now I&apos;m studying data science and building AI agents in my spare
-              time. My goal is to grow into an AI engineer, not just someone who calls
-              the APIs.
+              This summer I interned as a software engineer at Visa, automating a manual
+              payments workflow. Now I&apos;m studying data science and building AI agents,
+              with the goal of growing into an AI engineer, not just someone who calls the APIs.
             </p>
             <p>
               Outside of code I write for my college magazine, tinker with FreeCAD and
@@ -876,53 +1016,200 @@ function About() {
   );
 }
 
+/* ---------- PROJECT COVERS ---------- */
+// Decorative, hand-built illustrations of what each project does.
+
+const EDITOR_LINES = [
+  [0, [['k', 'function '], ['f', 'twoSum'], ['', '(nums, target) {']]],
+  [1, [['k', 'const '], ['', 'seen = '], ['k', 'new '], ['f', 'Map'], ['', '();']]],
+  [1, [['k', 'for '], ['', '(let i = 0; i < nums.length; i++) {']]],
+  [2, [['k', 'const '], ['', 'need = target - nums[i];']]],
+  [2, [['k', 'if '], ['', '(seen.'], ['f', 'has'], ['', '(need)) '], ['k', 'return '], ['', '[seen.'], ['f', 'get'], ['', '(need), i];']]],
+];
+
+const TP53_ROWS = [
+  ['ATG', 'GAG', 'GAG', 'CCG', 'CAG', 'TCA', 'GAT', 'CCT'],
+  ['AGC', 'GTC', 'GAG', 'CCC', 'CCT', 'CTG', 'AGT', 'CAG'],
+  ['GAA', 'ACA', 'TTT', 'TCA', 'GAC', 'CTA', 'TGG', 'AAA'],
+];
+
+function ProjectCover({ kind }) {
+  let body = null;
+
+  if (kind === 'editor') {
+    body = (
+      <div className="cover__window">
+        <div className="cover__bar">
+          <i />
+          <i />
+          <i />
+          <span>two-sum.js</span>
+        </div>
+        <div className="cover__code">
+          {EDITOR_LINES.map(([indent, parts], i) => (
+            <div key={i} className="cover__line" style={{ paddingLeft: `${indent * 1.4}em` }}>
+              <span className="cover__ln">{i + 1}</span>
+              {parts.map(([cls, text], j) => (
+                <span key={j} className={cls ? `tk-${cls}` : undefined}>{text}</span>
+              ))}
+            </div>
+          ))}
+        </div>
+        <div className="cover__hint">
+          <HiSparkles />
+          A hash map gives O(n) lookups
+        </div>
+      </div>
+    );
+  } else if (kind === 'quiz') {
+    body = (
+      <div className="cover__quiz">
+        <div className="cover__quiz-head">
+          <span>Q3 of 10</span>
+          <span>Operating Systems</span>
+        </div>
+        <div className="cover__quiz-progress"><span /></div>
+        <p className="cover__quiz-q">Which scheduling algorithm can cause starvation?</p>
+        <ul className="cover__quiz-options">
+          <li>First Come, First Served</li>
+          <li className="is-correct">Shortest Job First <HiCheck /></li>
+          <li>Round Robin</li>
+        </ul>
+      </div>
+    );
+  } else if (kind === 'flow') {
+    body = (
+      <div className="cover__flow">
+        {['Student', 'Faculty', 'Admin', 'VO'].map((step) => (
+          <div key={step} className="cover__flow-step">
+            <span className="cover__flow-node"><HiCheck /></span>
+            <span className="cover__flow-label">{step}</span>
+          </div>
+        ))}
+        <div className="cover__flow-step cover__flow-step--done">
+          <span className="cover__flow-node"><HiCheckBadge /></span>
+          <span className="cover__flow-label">Approved</span>
+        </div>
+      </div>
+    );
+  } else if (kind === 'feed') {
+    body = (
+      <div className="cover__feed">
+        <div className="cover__feed-sources">
+          {['Research', 'Blogs', 'News'].map((s) => (
+            <span key={s} className="cover__chip">{s}</span>
+          ))}
+        </div>
+        <div className="cover__feed-agent">
+          <span className="cover__feed-wire" />
+          <span className="cover__feed-node"><HiSparkles /></span>
+          <span className="cover__feed-wire" />
+        </div>
+        <div className="cover__feed-digest">
+          <span className="cover__feed-title">Today in AI</span>
+          <span className="cover__bar-line" style={{ width: '92%' }} />
+          <span className="cover__bar-line" style={{ width: '74%' }} />
+          <span className="cover__bar-line" style={{ width: '84%' }} />
+        </div>
+      </div>
+    );
+  } else if (kind === 'dna') {
+    body = (
+      <div className="cover__dna">
+        <div className="cover__dna-label">TP53 · coding sequence</div>
+        {TP53_ROWS.map((row, r) => (
+          <div key={r} className="cover__dna-row">
+            {row.map((codon, c) => (
+              <span key={c} className={r === 1 && c === 3 ? 'is-flagged' : undefined}>
+                {codon}
+              </span>
+            ))}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className={`cover cover--${kind}`} aria-hidden="true">
+      {body}
+    </div>
+  );
+}
+
+function ProjectCard({ project: p, index }) {
+  return (
+    <SpotlightCard className={`work__card ${p.featured ? 'work__card--featured' : ''}`}>
+      <ProjectCover kind={p.visual} />
+      <div className="work__card-body">
+        <div className="work__card-head">
+          <span className="work__card-index">{String(index + 1).padStart(2, '0')}</span>
+          {p.featured && <span className="work__tag work__tag--accent">Featured</span>}
+          {p.demo && <span className="work__tag work__tag--live">Live</span>}
+        </div>
+
+        <h3 className="work__card-title">{p.title}</h3>
+        <p className="work__card-tagline">{p.tagline}</p>
+        <p className="work__card-desc">{p.description}</p>
+
+        <ul className="work__card-tech" aria-label="Tech stack">
+          {p.tech.map((t) => (
+            <li key={t} className="work__tech">{t}</li>
+          ))}
+        </ul>
+
+        <div className="work__card-links">
+          <a href={p.github} target="_blank" rel="noopener noreferrer" className="work__link">
+            <SiGithub /> Source code
+            <span className="sr-only"> for {p.title}</span>
+          </a>
+          {p.demo && (
+            <a href={p.demo} target="_blank" rel="noopener noreferrer" className="work__link work__link--primary">
+              Live demo <HiArrowUpRight />
+              <span className="sr-only"> of {p.title}</span>
+            </a>
+          )}
+        </div>
+      </div>
+    </SpotlightCard>
+  );
+}
+
 function Projects() {
+  const featured = PROJECTS.filter((p) => p.featured);
+  const rest = PROJECTS.filter((p) => !p.featured);
+
   return (
     <section className="work" id="work">
       <div className="container">
         <SectionHeader
           eyebrow="02 · Selected work"
-          title="Projects I&apos;ve built and shipped."
-          description="A selection of recent work, with source code and live demos."
+          title="Projects I’ve built and shipped."
+          description="Full-stack and AI projects, each with source code on GitHub."
         />
 
-        <div className="work__grid">
-          {PROJECTS.map((p, i) => (
+        <div className="work__grid work__grid--featured">
+          {featured.map((p, i) => (
             <Reveal key={p.title} delay={i * 0.05}>
-              <SpotlightCard className={`work__card ${p.featured ? 'work__card--featured' : ''}`}>
-                <div className="work__card-head">
-                  <div className="work__card-index">0{i + 1}</div>
-                  <div className="work__card-tags">
-                    {p.featured && <span className="work__tag work__tag--accent">Featured</span>}
-                  </div>
-                </div>
-
-                <h3 className="work__card-title">{p.title}</h3>
-                <p className="work__card-tagline">{p.tagline}</p>
-                <p className="work__card-desc">{p.description}</p>
-
-                <div className="work__card-tech">
-                  {p.tech.map((t) => (
-                    <span key={t} className="work__tech">{t}</span>
-                  ))}
-                </div>
-
-                <div className="work__card-links">
-                  <a href={p.github} target="_blank" rel="noopener noreferrer" className="work__link">
-                    <SiGithub /> Source
-                  </a>
-                  {p.demo ? (
-                    <a href={p.demo} target="_blank" rel="noopener noreferrer" className="work__link work__link--primary">
-                      Live demo <HiArrowUpRight />
-                    </a>
-                  ) : (
-                    <span className="work__link work__link--disabled">No live demo</span>
-                  )}
-                </div>
-              </SpotlightCard>
+              <ProjectCard project={p} index={i} />
             </Reveal>
           ))}
         </div>
+        <div className="work__grid work__grid--rest">
+          {rest.map((p, i) => (
+            <Reveal key={p.title} delay={i * 0.05}>
+              <ProjectCard project={p} index={featured.length + i} />
+            </Reveal>
+          ))}
+        </div>
+
+        <Reveal className="work__more">
+          <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" className="btn btn--ghost">
+            <SiGithub />
+            More on GitHub
+            <HiArrowUpRight />
+          </a>
+        </Reveal>
       </div>
     </section>
   );
@@ -983,29 +1270,35 @@ function useRatingData(source) {
 }
 
 function useLiveStat(profile) {
-  const [stat, setStat] = useState({ value: '…', label: profile.statLabel, pending: true });
+  const [stat, setStat] = useState({ value: null, label: profile.statLabel, pending: true });
 
   useEffect(() => {
     if (!profile.fetchStat) return;
 
     let cancelled = false;
-    const cached = readCache('stat-' + profile.name);
+    const cacheKey = 'stat-' + profile.name;
+    const cached = readCache(cacheKey);
     if (cached) {
       setStat({ value: cached.value, label: cached.label, pending: false });
       return;
     }
 
-    setStat({ value: '…', label: profile.statLabel, pending: true });
+    setStat({ value: null, label: profile.statLabel, pending: true });
     profile
       .fetchStat()
       .then((s) => {
         if (cancelled) return;
-        writeCache('stat-' + profile.name, s);
+        writeCache(cacheKey, s);
         setStat({ value: s.value, label: s.label, pending: false });
       })
       .catch(() => {
         if (cancelled) return;
-        setStat({ value: '—', label: profile.statLabel, pending: false });
+        const stale = readCache(cacheKey, true);
+        setStat(
+          stale
+            ? { value: stale.value, label: stale.label, pending: false }
+            : { value: null, label: profile.statLabel, pending: false }
+        );
       });
 
     return () => {
@@ -1016,170 +1309,218 @@ function useLiveStat(profile) {
   return stat;
 }
 
-const CG_W = 720;
-const CG_H = 224;
-const CG_PAD_X = 12;
-const CG_PAD_Y = 22;
+const CG_H = 260;
+const CG_PAD = { top: 14, right: 58, bottom: 30, left: 44 };
+const LABEL_GAP = 16;
+
+function niceStep(span, targetTicks = 4) {
+  const raw = span / targetTicks;
+  const mag = 10 ** Math.floor(Math.log10(raw));
+  const n = raw / mag;
+  return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 5 ? 5 : 10) * mag;
+}
+
+const fmtMonth = (ts) =>
+  new Date(ts).toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+const fmtFullDate = (ts) =>
+  new Date(ts).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 
 function CombinedGraph({ series }) {
   const reduce = useReducedMotion();
-  const [ref, inView] = useInView();
+  const [viewRef, inView] = useInView();
+  const [sizeRef, width] = useElementWidth();
   const [hv, setHv] = useState(null);
 
-  const fmtDate = (ts) =>
-    new Date(ts).toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
-  const fmtFullDate = (ts) =>
-    new Date(ts).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  const setRefs = useCallback(
+    (node) => {
+      viewRef.current = node;
+      sizeRef.current = node;
+    },
+    [viewRef, sizeRef]
+  );
 
-  if (series.length === 0) {
-    return (
-      <div className="combined-chart__empty">
-        Rating data is temporarily unavailable.
-      </div>
-    );
-  }
+  const W = Math.max(width, 1);
+  const plotL = CG_PAD.left;
+  const plotR = W - CG_PAD.right;
+  const plotT = CG_PAD.top;
+  const plotB = CG_H - CG_PAD.bottom;
 
-  const allPoints = series.flatMap((s) => (s.points || []).filter(Boolean));
+  // One shared rating axis for every platform.
+  const allPoints = series.flatMap((s) => s.points);
   const t0 = Math.min(...allPoints.map((p) => p.date));
   const t1 = Math.max(...allPoints.map((p) => p.date));
   const tspan = t1 - t0 || 1;
+  const rMin = Math.min(...allPoints.map((p) => p.rating));
+  const rMax = Math.max(...allPoints.map((p) => p.rating));
+  const step = niceStep(rMax - rMin || 100);
+  const lo = Math.floor(rMin / step) * step;
+  const hi = Math.max(Math.ceil(rMax / step) * step, lo + step);
 
-  const x = (date) => CG_PAD_X + ((date - t0) / tspan) * (CG_W - CG_PAD_X * 2);
+  const x = (date) => plotL + ((date - t0) / tspan) * Math.max(plotR - plotL, 1);
+  const y = (r) => plotT + (1 - (r - lo) / (hi - lo)) * (plotB - plotT);
 
-  const prepared = series.map((s) => {
-    const ratings = s.points.map((p) => p.rating);
-    const min = Math.min(...ratings);
-    const max = Math.max(...ratings);
-    const rspan = max - min || 1;
-    const lo = min - rspan * 0.15;
-    const hi = max + rspan * 0.15;
-    const y = (r) => CG_H - CG_PAD_Y - ((r - lo) / (hi - lo)) * (CG_H - CG_PAD_Y * 2);
-    return {
-      s,
-      y,
-      line: s.points
-        .map((p, i) => `${i === 0 ? 'M' : 'L'}${x(p.date).toFixed(1)},${y(p.rating).toFixed(1)}`)
-        .join(' '),
-    };
-  });
+  const yTicks = [];
+  for (let v = lo; v <= hi + step / 1000; v += step) yTicks.push(v);
+
+  const xTickCount = W < 480 ? 3 : 5;
+  const xTicks = Array.from({ length: xTickCount }, (_, i) => t0 + (i / (xTickCount - 1)) * tspan);
+
+  const prepared = series.map((s) => ({
+    s,
+    line: s.points
+      .map((p, i) => `${i === 0 ? 'M' : 'L'}${x(p.date).toFixed(1)},${y(p.rating).toFixed(1)}`)
+      .join(' '),
+  }));
+
+  // Latest-rating labels in the right gutter, nudged apart so they never overlap.
+  const endLabels = series
+    .map((s) => {
+      const p = s.points[s.points.length - 1];
+      return { key: s.key, color: s.color, rating: p.rating, y: y(p.rating) };
+    })
+    .sort((a, b) => a.y - b.y);
+  for (let i = 1; i < endLabels.length; i++) {
+    endLabels[i].y = Math.max(endLabels[i].y, endLabels[i - 1].y + LABEL_GAP);
+  }
+  const overflow = endLabels.length ? endLabels[endLabels.length - 1].y - (plotB + 4) : 0;
+  if (overflow > 0) endLabels.forEach((l) => (l.y -= overflow));
 
   const onMove = (e) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const px = ((e.clientX - rect.left) / rect.width) * CG_W;
-    const py = ((e.clientY - rect.top) / rect.height) * CG_H;
-    setHv({ x: px, y: py });
+    setHv({ x: e.clientX - rect.left, y: e.clientY - rect.top });
   };
 
   const active =
     hv === null
       ? null
-      : prepared.reduce((acc, { s, y }) => {
+      : series.reduce((acc, s) => {
           for (const p of s.points) {
             const dx = x(p.date) - hv.x;
             const dy = y(p.rating) - hv.y;
             const d = dx * dx + dy * dy;
-            if (!acc || d < acc.d) acc = { s, p, py: y(p.rating), d };
+            if (!acc || d < acc.d) acc = { s, p, d };
           }
           return acc;
         }, null);
 
-  const ax = active === null ? 0 : x(active.p.date);
+  const ax = active ? x(active.p.date) : 0;
+  const ay = active ? y(active.p.rating) : 0;
+  const dim = (key) => active && active.s.key !== key;
 
   return (
     <div
       className="combined-chart__plot"
-      ref={ref}
-      style={{ touchAction: 'none' }}
+      ref={setRefs}
+      style={{ touchAction: 'pan-y' }}
       onPointerMove={onMove}
+      onPointerDown={onMove}
       onPointerLeave={() => setHv(null)}
     >
-      <svg viewBox={`0 0 ${CG_W} ${CG_H}`} role="img" aria-label="Combined rating history">
-        {[0.2, 0.4, 0.6, 0.8].map((f) => (
-          <line
-            key={f}
-            x1={CG_PAD_X}
-            x2={CG_W - CG_PAD_X}
-            y1={CG_H * f}
-            y2={CG_H * f}
-            className="combined-chart__grid"
-          />
-        ))}
+      {width > 0 && (
+        <svg
+          width={W}
+          height={CG_H}
+          viewBox={`0 0 ${W} ${CG_H}`}
+          role="img"
+          aria-label="Contest rating history for LeetCode, CodeChef, and Codeforces"
+        >
+          {yTicks.map((v) => (
+            <g key={v}>
+              <line x1={plotL} x2={plotR} y1={y(v)} y2={y(v)} className="combined-chart__grid" />
+              <text x={plotL - 8} y={y(v)} className="combined-chart__axis" textAnchor="end" dominantBaseline="middle">
+                {v}
+              </text>
+            </g>
+          ))}
+          {xTicks.map((t, i) => (
+            <text
+              key={t}
+              x={x(t)}
+              y={CG_H - 8}
+              className="combined-chart__axis"
+              textAnchor={i === 0 ? 'start' : i === xTicks.length - 1 ? 'end' : 'middle'}
+            >
+              {fmtMonth(t)}
+            </text>
+          ))}
 
-        {prepared.map(({ s, line }) => (
-          <motion.path
-            key={s.key}
-            d={line}
-            className="combined-chart__line"
-            stroke={s.color}
-            fill="none"
-            strokeOpacity={active && active.s.key !== s.key ? 0.18 : 1}
-            style={{ transition: 'stroke-opacity 0.25s' }}
-            initial={reduce ? false : { pathLength: 0 }}
-            animate={inView ? { pathLength: 1 } : {}}
-            transition={{ duration: 1.1, ease: EASE }}
-          />
-        ))}
-
-        {prepared.map(({ s, y }) => {
-          const p = s.points[s.points.length - 1];
-          return (
-            <circle
-              key={`end-${s.key}`}
-              cx={x(p.date)}
-              cy={y(p.rating)}
-              r={s.points.length === 1 ? 3.5 : 3}
-              fill={s.color}
-              stroke="#f7f8fb"
-              strokeWidth="1.5"
-              opacity={active && active.s.key !== s.key ? 0.3 : 1}
+          {prepared.map(({ s, line }) => (
+            <motion.path
+              key={s.key}
+              d={line}
+              className="combined-chart__line"
+              fill="none"
+              style={{ stroke: s.color, opacity: dim(s.key) ? 0.2 : 1 }}
+              initial={reduce ? false : { pathLength: 0 }}
+              animate={inView ? { pathLength: 1 } : {}}
+              transition={{ duration: 1.1, ease: EASE }}
             />
-          );
-        })}
+          ))}
 
-        {active !== null && (
-          <>
-            <line
-              x1={ax}
-              x2={ax}
-              y1={CG_PAD_Y * 0.5}
-              y2={CG_H - CG_PAD_Y * 0.5}
-              className="combined-chart__cursor"
-            />
-            <circle
-              cx={ax}
-              cy={active.py}
-              r="5"
-              fill="#f7f8fb"
-              stroke={active.s.color}
-              strokeWidth="2.5"
-            />
-          </>
-        )}
-      </svg>
+          {series.map((s) => {
+            const p = s.points[s.points.length - 1];
+            return (
+              <circle
+                key={`end-${s.key}`}
+                cx={x(p.date)}
+                cy={y(p.rating)}
+                r="4"
+                className="combined-chart__marker"
+                style={{ fill: s.color, opacity: dim(s.key) ? 0.3 : 1 }}
+              />
+            );
+          })}
 
-      <div className="combined-chart__labels">
-        <span>{fmtDate(t0)}</span>
-        <span>{fmtDate((t0 + t1) / 2)}</span>
-        <span>{fmtDate(t1)}</span>
-      </div>
+          {endLabels.map((l) => (
+            <g key={`label-${l.key}`} style={{ opacity: dim(l.key) ? 0.35 : 1 }}>
+              <line
+                x1={plotR + 6}
+                x2={plotR + 16}
+                y1={l.y}
+                y2={l.y}
+                className="combined-chart__swatch"
+                style={{ stroke: l.color }}
+              />
+              <text x={plotR + 21} y={l.y} className="combined-chart__end" dominantBaseline="middle">
+                {l.rating}
+              </text>
+            </g>
+          ))}
 
-      {active !== null && (
+          {active && (
+            <>
+              <line x1={ax} x2={ax} y1={plotT} y2={plotB} className="combined-chart__cursor" />
+              <circle
+                cx={ax}
+                cy={ay}
+                r="5.5"
+                className="combined-chart__focus"
+                style={{ stroke: active.s.color }}
+              />
+            </>
+          )}
+        </svg>
+      )}
+
+      {active && (
         <div
-          className="combined-chart__tooltip"
-          style={{ left: `${Math.min(86, Math.max(14, (ax / CG_W) * 100))}%` }}
+          className={`combined-chart__tooltip ${ay < CG_H / 2 ? 'is-below' : ''}`}
+          style={{
+            left: Math.min(W - 118, Math.max(118, ax)),
+            top: ay,
+          }}
         >
           <div className="combined-chart__tooltip-date">{fmtFullDate(active.p.date)}</div>
           <div className="combined-chart__tooltip-row">
-            <span
-              className="combined-chart__tooltip-dot"
-              style={{ background: active.s.color }}
-            />
+            <span className="combined-chart__tooltip-dot" style={{ background: active.s.color }} />
             <span className="combined-chart__tooltip-name">{active.s.name}</span>
             <span className="combined-chart__tooltip-rating">{active.p.rating}</span>
-            <span className="combined-chart__tooltip-contest" title={active.p.name}>
-              {active.p.name}
-            </span>
           </div>
+          {active.p.name && (
+            <div className="combined-chart__tooltip-contest" title={active.p.name}>
+              {active.p.name}
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -1198,17 +1539,17 @@ function LegendChip({ source }) {
       className={`legend-chip ${ready ? '' : 'legend-chip--off'}`}
     >
       <span className="legend-chip__dot" style={{ background: color }} />
-      <span className="legend-chip__name">{name}</span>
-      {ready ? (
-        <>
-          <span className="legend-chip__current">{data.current}</span>
-          <span className="legend-chip__meta">
-            peak {data.max} · {data.points.length} contest{data.points.length === 1 ? '' : 's'}
-          </span>
-        </>
-      ) : (
-        <span className="legend-chip__meta">@{handle} · unavailable</span>
-      )}
+      <span className="legend-chip__text">
+        <span className="legend-chip__name">{name}</span>
+        <span className="legend-chip__meta">
+          {ready
+            ? `Peak ${data.max} · ${data.points.length} contest${data.points.length === 1 ? '' : 's'}`
+            : data.status === 'loading'
+              ? `@${handle}`
+              : `Couldn’t load · view @${handle}`}
+        </span>
+      </span>
+      {ready && <span className="legend-chip__current">{data.current}</span>}
       <HiArrowUpRight className="legend-chip__arrow" />
     </a>
   );
@@ -1229,26 +1570,33 @@ function CombinedRatingCard() {
   const ready = series
     .filter((s) => s.data.status === 'ready' && s.data.points.length > 0)
     .map((s) => ({ ...s, points: s.data.points }));
+  const status = isLoading ? 'syncing' : ready.length ? 'live' : 'offline';
+  const statusLabel = { syncing: 'Syncing…', live: 'Live', offline: 'Offline' }[status];
 
   return (
     <Reveal className="combined-chart">
       <div className="combined-chart__head">
         <div>
-          <h3 className="rating__title">Live rating history</h3>
+          <h3 className="rating__title">Contest rating history</h3>
           <p className="rating__sub">
-            Combined rating history from LeetCode, CodeChef, and Codeforces.
+            Every rated contest on LeetCode, CodeChef, and Codeforces, on one rating scale.
           </p>
         </div>
-        <span className="combined-chart__live">
+        <span className={`combined-chart__live combined-chart__live--${status}`}>
           <span className="combined-chart__live-dot" />
-          {isLoading ? 'Syncing…' : 'Live'}
+          {statusLabel}
         </span>
       </div>
 
       {isLoading ? (
         <div className="combined-chart__skeleton" aria-hidden="true" />
-      ) : (
+      ) : ready.length ? (
         <CombinedGraph series={ready} />
+      ) : (
+        <div className="combined-chart__empty">
+          <p>The rating services aren&apos;t responding right now.</p>
+          <p>Each profile below has the full, verifiable history.</p>
+        </div>
       )}
 
       <div className="combined-chart__legend">
@@ -1257,9 +1605,9 @@ function CombinedRatingCard() {
         ))}
       </div>
 
-      {!isLoading && (
+      {!isLoading && ready.length > 0 && (
         <table className="sr-only">
-          <caption>Recent contest ratings on LeetCode, CodeChef, and Codeforces</caption>
+          <caption>Contest ratings on LeetCode, CodeChef, and Codeforces</caption>
           <thead>
             <tr>
               <th scope="col">Platform</th>
@@ -1273,13 +1621,7 @@ function CombinedRatingCard() {
               s.points.map((p, i) => (
                 <tr key={s.key + '-' + i}>
                   <td>{s.name}</td>
-                  <td>
-                    {new Date(p.date).toLocaleDateString('en-US', {
-                      year: 'numeric',
-                      month: 'short',
-                      day: 'numeric',
-                    })}
-                  </td>
+                  <td>{fmtFullDate(p.date)}</td>
                   <td>{p.name}</td>
                   <td>{p.rating}</td>
                 </tr>
@@ -1295,9 +1637,10 @@ function CombinedRatingCard() {
 function CodingCard({ profile, index }) {
   const Icon = profile.icon;
   const stat = useLiveStat(profile);
+  const failed = !stat.pending && stat.value === null;
 
   return (
-    <Reveal key={profile.name} delay={index * 0.05}>
+    <Reveal delay={index * 0.05}>
       <a
         href={profile.url}
         target="_blank"
@@ -1309,18 +1652,20 @@ function CodingCard({ profile, index }) {
           e.currentTarget.style.setProperty('--my', `${e.clientY - rect.top}px`);
         }}
       >
-        <div className="coding__card-icon">
-          <Icon />
-        </div>
-        <div className="coding__card-body">
-          <div className="coding__card-name">{profile.name}</div>
-          <div className="coding__card-handle">@{profile.handle}</div>
+        <div className="coding__card-top">
+          <span className="coding__card-icon">
+            <Icon />
+          </span>
+          <span className="coding__card-name">{profile.name}</span>
+          <HiArrowUpRight className="coding__card-arrow" />
         </div>
         <div className={'coding__card-stat' + (stat.pending ? ' is-pending' : '')}>
-          <div className="coding__card-stat-value">{stat.value}</div>
+          <div className={'coding__card-stat-value' + (failed ? ' is-empty' : '')}>
+            {stat.pending ? '000' : failed ? 'View profile' : stat.value}
+          </div>
           <div className="coding__card-stat-label">{stat.label}</div>
         </div>
-        <HiArrowUpRight className="coding__card-arrow" />
+        <div className="coding__card-handle">@{profile.handle}</div>
       </a>
     </Reveal>
   );
@@ -1333,7 +1678,7 @@ function Coding() {
         <SectionHeader
           eyebrow="03 · Competitive coding"
           title="Coding practice with verifiable ratings."
-          description="Live ratings from LeetCode, CodeChef, and Codeforces."
+          description="Numbers pulled live from each platform. Click through to verify."
         />
 
         <div className="coding__grid">
@@ -1354,29 +1699,31 @@ function Experience() {
       <div className="container">
         <SectionHeader
           eyebrow="04 · Experience"
-          title="Work, internships, and practice."
-          description="A timeline of roles, projects, and ongoing practice."
+          title="Where I’ve done the work."
+          description="Industry experience and the projects I build alongside it."
         />
 
-        <div className="experience__list">
+        <ol className="experience__list">
           {EXPERIENCE.map((item, i) => (
-            <Reveal key={item.role} delay={i * 0.08} className="experience__item">
-              <div className="experience__period">{item.period}</div>
-              <div className="experience__content">
-                <div className="experience__role-row">
-                  <h3 className="experience__role">{item.role}</h3>
-                  {item.tag && <span className="experience__tag">{item.tag}</span>}
+            <li key={item.role}>
+              <Reveal delay={i * 0.08} className="experience__item">
+                <div className="experience__period">{item.period}</div>
+                <div className="experience__content">
+                  <div className="experience__role-row">
+                    <h3 className="experience__role">{item.role}</h3>
+                    {item.tag && <span className="experience__tag">{item.tag}</span>}
+                  </div>
+                  <p className="experience__org">{item.org}</p>
+                  <ul className="experience__bullets">
+                    {item.bullets.map((b) => (
+                      <li key={b}>{b}</li>
+                    ))}
+                  </ul>
                 </div>
-                <p className="experience__org">{item.org}</p>
-                <ul className="experience__bullets">
-                  {item.bullets.map((b) => (
-                    <li key={b}>{b}</li>
-                  ))}
-                </ul>
-              </div>
-            </Reveal>
+              </Reveal>
+            </li>
           ))}
-        </div>
+        </ol>
       </div>
     </section>
   );
@@ -1384,7 +1731,7 @@ function Experience() {
 
 function Skills() {
   return (
-    <section className="skills">
+    <section className="skills" id="skills">
       <div className="container">
         <SectionHeader
           eyebrow="05 · Skills"
@@ -1394,12 +1741,12 @@ function Skills() {
         <div className="skills__groups">
           {SKILL_GROUPS.map((group, i) => (
             <Reveal key={group.label} delay={i * 0.04} className="skills__group">
-              <div className="skills__group-label">{group.label}</div>
-              <div className="skills__tags">
+              <h3 className="skills__group-label">{group.label}</h3>
+              <ul className="skills__tags">
                 {group.items.map((s) => (
-                  <span key={s} className="skills__tag">{s}</span>
+                  <li key={s} className="skills__tag">{s}</li>
                 ))}
-              </div>
+              </ul>
             </Reveal>
           ))}
         </div>
@@ -1410,7 +1757,7 @@ function Skills() {
 
 function Education() {
   return (
-    <section className="edu-cert">
+    <section className="edu-cert" id="education">
       <div className="container">
         <div className="edu-cert__grid">
           <div>
@@ -1430,22 +1777,52 @@ function Education() {
           <div>
             <SectionHeader eyebrow="07 · Certifications" title="Certifications and credentials." />
             <div className="edu-cert__list">
-              {CERTIFICATIONS.map((c, i) => (
-                <Reveal key={c.title} delay={i * 0.05} className="edu-cert__cert">
-                  <div className="edu-cert__cert-row">
-                    <div>
+              {CERTIFICATIONS.map((c, i) => {
+                const Icon = c.icon;
+                return (
+                  <Reveal key={c.title} delay={i * 0.05} className="edu-cert__cert">
+                    <span className="edu-cert__icon" aria-hidden="true">
+                      <Icon />
+                    </span>
+                    <div className="edu-cert__cert-body">
                       <h3 className="edu-cert__title">{c.title}</h3>
                       <p className="edu-cert__sub">{c.issuer}</p>
                     </div>
                     <span className="edu-cert__year">{c.year}</span>
-                  </div>
-                </Reveal>
-              ))}
+                  </Reveal>
+                );
+              })}
             </div>
           </div>
         </div>
       </div>
     </section>
+  );
+}
+
+function CopyEmailButton() {
+  const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    if (!copied) return;
+    const t = setTimeout(() => setCopied(false), 2000);
+    return () => clearTimeout(t);
+  }, [copied]);
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(EMAIL);
+      setCopied(true);
+    } catch {
+      window.location.href = `mailto:${EMAIL}`;
+    }
+  };
+
+  return (
+    <button type="button" className="btn btn--ghost btn--lg" onClick={copy}>
+      {copied ? <HiCheck /> : <HiOutlineClipboardDocument />}
+      <span aria-live="polite">{copied ? 'Copied' : 'Copy email'}</span>
+    </button>
   );
 }
 
@@ -1459,22 +1836,25 @@ function Contact() {
             Let&apos;s build <span className="hero__name-accent">something</span>.
           </h2>
           <p className="contact__desc">
-            Open for interesting collaborations.
-            The fastest way to reach me is email.
+            Open to interesting collaborations and opportunities.
+            Email is the fastest way to reach me.
           </p>
           <div className="contact__cta">
-            <a href="mailto:chpurnabhargav@gmail.com" className="btn btn--primary btn--lg">
+            <a href={`mailto:${EMAIL}`} className="btn btn--primary btn--lg">
               <SiGmail />
-              chpurnabhargav@gmail.com
+              {EMAIL}
             </a>
-            <a
-              href="https://www.linkedin.com/in/purna-bhargav-challagundla-a783b1292/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="btn btn--ghost btn--lg"
-            >
-              <SiLinkedin />
-              LinkedIn
+            <CopyEmailButton />
+          </div>
+          <div className="contact__links">
+            <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer">
+              <SiLinkedin /> LinkedIn
+            </a>
+            <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
+              <SiGithub /> GitHub
+            </a>
+            <a href="/resume.pdf" download="Bhargav_Resume.pdf">
+              <HiArrowDownTray /> Resume
             </a>
           </div>
         </Reveal>
@@ -1487,13 +1867,20 @@ function Footer() {
   return (
     <footer className="footer">
       <div className="container footer__inner">
-        <p>© {new Date().getFullYear()} Purna Bhargav CH.</p>
-        <a href="#top" className="footer__top" onClick={(e) => {
-          e.preventDefault();
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}>
-          Back to top ↑
-        </a>
+        <p>© {new Date().getFullYear()} Purna Bhargav CH · Built with React &amp; Vite</p>
+        <div className="footer__socials">
+          {SOCIAL_LINKS.map(({ icon: Icon, href, label }) => (
+            <a
+              key={label}
+              href={href}
+              target={href.startsWith('http') ? '_blank' : undefined}
+              rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
+              aria-label={label}
+            >
+              <Icon />
+            </a>
+          ))}
+        </div>
       </div>
     </footer>
   );
@@ -1502,20 +1889,25 @@ function Footer() {
 /* ---------- PAGE ---------- */
 
 export default function HomePage() {
-  // Always scroll to top on load
+  const [theme, toggleTheme] = useTheme();
+
+  // Open deep links like /#contact at their section; otherwise start at the top.
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'auto' });
-    if (window.location.hash) {
-      window.history.replaceState(null, '', window.location.pathname);
+    const id = window.location.hash.slice(1);
+    const target = id && document.getElementById(id);
+    if (target) {
+      requestAnimationFrame(() => target.scrollIntoView({ block: 'start' }));
+    } else {
+      window.scrollTo({ top: 0, behavior: 'auto' });
     }
   }, []);
 
   return (
     <div className="page">
+      <a href="#main" className="skip-link">Skip to content</a>
       <ScrollProgress />
-      <CursorGlow />
-      <Navbar />
-      <main>
+      <Navbar theme={theme} onToggleTheme={toggleTheme} />
+      <main id="main">
         <Hero />
         <Marquee />
         <About />

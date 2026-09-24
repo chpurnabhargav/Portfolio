@@ -4,27 +4,58 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Purna Bhargav — Full Stack Developer building intelligent, user-centric applications with React, Node.js, and AI APIs. Projects, coding stats, experience, and certifications." />
+    <title>Purna Bhargav — Full Stack Developer</title>
+    <meta name="description" content="Purna Bhargav — Full Stack Developer and Software Engineer Intern at Visa (Summer 2026), building intelligent, user-centric applications with React, Node.js, and AI APIs." />
     <meta name="author" content="Purna Bhargav Challagundla" />
+    <link rel="canonical" href="https://portfolio-purna-bhargavs-projects.vercel.app/" />
     <meta name="theme-color" content="#e9ecf1" />
+
     <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://portfolio-purna-bhargavs-projects.vercel.app/" />
+    <meta property="og:site_name" content="Purna Bhargav" />
     <meta property="og:title" content="Purna Bhargav — Full Stack Developer" />
     <meta property="og:description" content="Full Stack Developer building intelligent, user-centric applications with React, Node.js, and modern AI APIs." />
-    <meta property="og:image" content="/img.jpg" />
+    <meta property="og:image" content="https://portfolio-purna-bhargavs-projects.vercel.app/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Purna Bhargav — Full Stack Developer" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Purna Bhargav — Full Stack Developer" />
+    <meta name="twitter:description" content="Full Stack Developer building intelligent, user-centric applications with React, Node.js, and modern AI APIs." />
+    <meta name="twitter:image" content="https://portfolio-purna-bhargavs-projects.vercel.app/og-image.png" />
+
+    <!-- Apply the saved or OS theme before first paint to avoid a flash. -->
+    <script>
+      (function () {
+        var t;
+        try { t = localStorage.getItem('pb-theme'); } catch (e) { /* storage blocked */ }
+        if (t !== 'light' && t !== 'dark') {
+          t = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+        var root = document.documentElement;
+        root.setAttribute('data-theme', t);
+        root.style.colorScheme = t;
+        if (t === 'dark') {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0b1019');
+        }
+      })();
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap"
       rel="stylesheet"
     />
-    <title>Purna Bhargav — Full Stack Developer</title>
+    <link rel="preload" as="image" href="/img.jpg" />
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "Person",
         "name": "Purna Bhargav Challagundla",
         "jobTitle": "Full Stack Developer",
+        "url": "https://portfolio-purna-bhargavs-projects.vercel.app/",
+        "image": "https://portfolio-purna-bhargavs-projects.vercel.app/img.jpg",
         "email": "mailto:chpurnabhargav@gmail.com",
         "alumniOf": "KLH University",
         "knowsAbout": [
@@ -47,6 +78,12 @@
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <p style="padding: 2rem; font-family: system-ui, sans-serif;">
+        This portfolio needs JavaScript. You can reach Purna Bhargav at
+        <a href="mailto:chpurnabhargav@gmail.com">chpurnabhargav@gmail.com</a>.
+      </p>
+    </noscript>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
